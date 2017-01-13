@@ -3,6 +3,10 @@ package org.usfirst.frc.team237.robot.subsystems;
 import org.usfirst.frc.team237.robot.OI;
 import org.usfirst.frc.team237.robot.RobotMap;
 
+import com.kauailabs.navx.frc.AHRS;
+import com.kauailabs.sf2.frc.navXSensor;
+
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -11,6 +15,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class DriveSubsystem extends Subsystem {
 
 	private Pod frontLeft, frontRight, rearLeft, rearRight;
+	public AHRS gyro;
 	
 	public DriveSubsystem()
 	{
@@ -18,6 +23,8 @@ public class DriveSubsystem extends Subsystem {
 		frontLeft  = new Pod(RobotMap.DriveMap.frontLeft,  RobotMap.DriveMap.frontLeftSteering,  1);
 		rearLeft   = new Pod(RobotMap.DriveMap.rearLeft,   RobotMap.DriveMap.rearLeftSteering,   2);
 		rearRight  = new Pod(RobotMap.DriveMap.rearRight,  RobotMap.DriveMap.rearRightSteering,  3);
+		
+		gyro = new AHRS(SerialPort.Port.kMXP);
 	}
 
 	public void teleopDrive()
