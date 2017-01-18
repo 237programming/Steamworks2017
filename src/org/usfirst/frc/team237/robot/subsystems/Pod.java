@@ -18,7 +18,7 @@ public class Pod extends Subsystem {
 	public Pod(int driveTalon, int steeringTalon, int podNumber){	
 		drive = new CANTalon(driveTalon);
 		steer = new CANTalon(steeringTalon);
-		steer.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		steer.setFeedbackDevice(FeedbackDevice.AnalogEncoder);
 		steer.reverseSensor(false);
 		steer.setP(0.2);
 		steer.setI(0);

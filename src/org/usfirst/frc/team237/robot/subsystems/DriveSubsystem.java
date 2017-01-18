@@ -4,7 +4,6 @@ import org.usfirst.frc.team237.robot.OI;
 import org.usfirst.frc.team237.robot.RobotMap;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.kauailabs.sf2.frc.navXSensor;
 
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -15,8 +14,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class DriveSubsystem extends Subsystem {
 
 	private Pod frontLeft, frontRight, rearLeft, rearRight;
-	public AHRS gyro;
-	
+	private AHRS gyro; 
 	public DriveSubsystem()
 	{
 		frontRight = new Pod(RobotMap.DriveMap.frontRight, RobotMap.DriveMap.frontRightSteering, 0);
@@ -26,7 +24,14 @@ public class DriveSubsystem extends Subsystem {
 		
 		gyro = new AHRS(SerialPort.Port.kMXP);
 	}
-
+	/* ---pass in a polar vector and angle the robot will move in that direction and rotation ---*/
+	public void autoDrive(double mag, double theta){
+		double x,y; 
+		x = mag*Math.cos(Math.toRadians(theta));
+		y = mag*Math.sin(Math.toRadians(theta)); 
+		calcWheelsFromRectCoords(x,y,theta);
+	}
+	/* ---Drive the Robot in teleop. two joystick input ---*/
 	public void teleopDrive()
 	{
 		double x, y, rotate;
@@ -34,6 +39,11 @@ public class DriveSubsystem extends Subsystem {
 		y = OI.strafeJoystick.getRawAxis(0);
 		rotate = OI.rotateJoystick.getRawAxis(0);
 		
+		//calculate angle/speed setpoints using 30x30 in. robot
+		calcWheelsFromRectCoords(x,y,rotate); 
+	}
+	private void calcWheelsFromRectCoords(double x, double y, double rotate)
+	{
 		//calculate angle/speed setpoints using 30x30 in. robot
 		double L = 30, W = 30;
 		double R = Math.sqrt((L * L) * (W * W));
@@ -86,7 +96,6 @@ public class DriveSubsystem extends Subsystem {
 		rearRight .setSteeringAngle (rearRightSteeringAngle);
 		rearRight .setWheelSpeed    (rearRightWheelSpeed);
 	}
-	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
