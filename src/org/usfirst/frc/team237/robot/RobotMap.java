@@ -10,15 +10,15 @@ public class RobotMap {
 	
 	public class DriveMap
 	{
-		public static final int frontRight = 0;
-		public static final int frontLeft  = 0;
-		public static final int rearLeft   = 0;
-		public static final int rearRight  = 0;
+		public static final int frontLeft  = 1;
+		public static final int frontRight = 2;
+		public static final int rearLeft   = 3;
+		public static final int rearRight  = 4;
 		
-		public static final int frontRightSteering = 0;
-		public static final int frontLeftSteering  = 0;
-		public static final int rearLeftSteering   = 0;
-		public static final int rearRightSteering  = 0;
+		public static final int frontLeftSteering  = 5;
+		public static final int frontRightSteering = 6;
+		public static final int rearLeftSteering   = 7;
+		public static final int rearRightSteering  = 8;
 		
 	}
 	
