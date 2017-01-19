@@ -28,8 +28,7 @@ public class Pod extends Subsystem {
 		steer.configNominalOutputVoltage(+ 0.0, - 0.0);
 		steer.configPeakOutputVoltage(+ 3f, - 3f);
 		steer.setAllowableClosedLoopErr(0);
-		zeroSensorsAndThrottle(); 
-		drive.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		drive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		drive.configNominalOutputVoltage(+ 0.0, - 0.0);
 		drive.configPeakOutputVoltage(+ 12.0, - 0.0);
 		drive.setProfile(0);
@@ -38,7 +37,8 @@ public class Pod extends Subsystem {
 		drive.setD(0);
 		drive.setF(0);
 		drive.reverseSensor(false);
-		this.podNumber = podNumber; 
+		this.podNumber = podNumber;
+		zeroSensorsAndThrottle(); 
 		
 		
 	}
@@ -69,23 +69,27 @@ public class Pod extends Subsystem {
     public void setSteeringAngle(double angle) {
     	targetPosition = angle;
     	enableClosedLoopAngle();
-    	SmartDashboard.putNumber("Pod" + podNumber + "/Current Angle", steer.get());
-    	SmartDashboard.putNumber("Pod" + podNumber + "/Tagret Angle", targetPosition);
+    	post(); 
     	
     }
 
 	public void setWheelSpeed(double speed){
-		SmartDashboard.putNumber("Pod" + podNumber + "/Motor Speed", drive.getSpeed());
-		SmartDashboard.putNumber("Pod" + podNumber + "/Target Speed", targetSpeed);
 		targetSpeed = speed;
 		enableClosedLoopSpeed();
-		
+		post();
 	}
 
 	public void intiDefaultCommand() {
 		
 	}
-
+	public void post(){
+		SmartDashboard.putNumber("Pod" + podNumber + "/Drive Closed Loop Error", drive.getClosedLoopError());
+		SmartDashboard.putNumber("Pod" + podNumber + "/Steer Closed Loop Error", steer.getClosedLoopError());
+		SmartDashboard.putNumber("Pod" + podNumber + "/Motor Speed", drive.getSpeed());
+		SmartDashboard.putNumber("Pod" + podNumber + "/Target Speed", targetSpeed);
+		SmartDashboard.putNumber("Pod" + podNumber + "/Current Angle", steer.get());
+    	SmartDashboard.putNumber("Pod" + podNumber + "/Tagret Angle", targetPosition);
+	}
 @Override
 protected void initDefaultCommand() {
 	// TODO Auto-generated method stub

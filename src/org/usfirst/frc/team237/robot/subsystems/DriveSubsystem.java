@@ -96,6 +96,25 @@ public class DriveSubsystem extends Subsystem {
 		rearRight .setSteeringAngle (rearRightSteeringAngle);
 		rearRight .setWheelSpeed    (rearRightWheelSpeed);
 	}
+	public void testPod(int pod, double speed, double angle)
+	{
+		if (pod == 0){
+			frontRight.setSteeringAngle(angle);
+			frontRight.setWheelSpeed(speed);
+		}
+		else if (pod == 1){
+			frontLeft.setSteeringAngle(angle);
+			frontLeft.setWheelSpeed(speed);
+		}
+		else if (pod == 2){
+			rearLeft.setSteeringAngle(angle);
+			rearLeft.setWheelSpeed(speed);
+		}
+		else if (pod == 3){
+			rearRight.setSteeringAngle(angle);
+			rearRight.setWheelSpeed(speed);
+		}
+	}
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
