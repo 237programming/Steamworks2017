@@ -28,7 +28,7 @@ public class DriveSubsystem extends Subsystem {
 	public void autoDrive(double mag, double theta){
 		double x,y; 
 		x = mag*Math.cos(Math.toRadians(theta));
-		y = mag*Math.sin(Math.toRadians(theta)); 
+		y = mag*Math.sin(Math.toRadians(theta));
 		calcWheelsFromRectCoords(x,y,theta);
 	}
 	/* ---Drive the Robot in teleop. two joystick input ---*/
