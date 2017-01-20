@@ -115,6 +115,12 @@ public class DriveSubsystem extends Subsystem {
 			rearRight.setWheelSpeed(speed);
 		}
 	}
+	public void post(){
+		rearRight.post();
+		frontRight.post();
+		rearLeft.post();
+		frontLeft.post();
+	}
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());

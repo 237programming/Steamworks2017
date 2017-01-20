@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team237.robot.commands.ExampleCommand;
 import org.usfirst.frc.team237.robot.subsystems.ExampleSubsystem;
-
+import org.usfirst.frc.team237.robot.subsystems.*;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -22,7 +22,8 @@ public class Robot extends IterativeRobot {
 
 	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
 	public static OI oi;
-
+	public static DriveSubsystem driveTrain = new DriveSubsystem(); 
+	
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
 	//comment so i can commit 
@@ -51,6 +52,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
+		driveTrain.post();
 	}
 
 	/**
@@ -103,7 +105,13 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		
 		Scheduler.getInstance().run();
+		double angle,speed; 
+		speed = OI.strafeJoystick.getRawAxis(0);
+		angle = OI.rotateJoystick.getRawAxis(0);
+		driveTrain.testPod(0, speed, angle);
+		driveTrain.post();
 	}
 
 	/**
