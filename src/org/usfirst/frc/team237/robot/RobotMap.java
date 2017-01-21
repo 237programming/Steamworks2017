@@ -10,6 +10,11 @@ public class RobotMap {
 	
 	public class DriveMap
 	{
+		public static final int frontLeftOffset = 0;
+		public static final int frontRightOffset = 0;
+		public static final int rearLeftOffset = 0;
+		public static final int rearRightOffset = 0;
+		
 		public static final int frontLeft  = 1;
 		public static final int frontRight = 2;
 		public static final int rearLeft   = 3;

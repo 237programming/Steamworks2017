@@ -12,13 +12,13 @@ import com.ctre.CANTalon.TalonControlMode;
 public class Pod extends Subsystem {
 	public CANTalon drive;
 	public CANTalon steer; 
-	public double targetPosition; 
-	public double targetSpeed; 
+	public double targetPosition=0.0; 
+	public double targetSpeed=0.0; 
 	public int podNumber; 
 	public Pod(int driveTalon, int steeringTalon, int podNumber){	
 		drive = new CANTalon(driveTalon);
 		steer = new CANTalon(steeringTalon);
-		steer.setFeedbackDevice(FeedbackDevice.AnalogEncoder);
+		steer.setFeedbackDevice(FeedbackDevice.AnalogPot);
 		steer.reverseSensor(false);
 		steer.setP(0.2);
 		steer.setI(0);
@@ -39,7 +39,8 @@ public class Pod extends Subsystem {
 		drive.reverseSensor(false);
 		this.podNumber = podNumber;
 		zeroSensorsAndThrottle(); 
-		
+		enableClosedLoopAngle();
+		enableClosedLoopSpeed(); 
 		
 	}
 	public void zeroSensorsAndThrottle(){
