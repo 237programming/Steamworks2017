@@ -15,6 +15,7 @@ public class Pod extends Subsystem {
 	public double targetPosition=0.0; 
 	public double targetSpeed=0.0; 
 	public int podNumber; 
+	private int offSet; 
 	public Pod(int driveTalon, int steeringTalon, int podNumber){	
 		drive = new CANTalon(driveTalon);
 		steer = new CANTalon(steeringTalon);
@@ -38,6 +39,36 @@ public class Pod extends Subsystem {
 		drive.setF(0);
 		drive.reverseSensor(false);
 		this.podNumber = podNumber;
+		this.offSet = 0; 
+		zeroSensorsAndThrottle(); 
+		enableClosedLoopAngle();
+		enableClosedLoopSpeed(); 
+		
+	}
+	public Pod(int driveTalon, int steeringTalon, int podNumber, int offSet){	
+		drive = new CANTalon(driveTalon);
+		steer = new CANTalon(steeringTalon);
+		steer.setFeedbackDevice(FeedbackDevice.AnalogPot);
+		steer.reverseSensor(false);
+		steer.setP(0.2);
+		steer.setI(0);
+		steer.setD(0);
+		steer.setF(0);
+		steer.setProfile(0);
+		steer.configNominalOutputVoltage(+ 0.0, - 0.0);
+		steer.configPeakOutputVoltage(+ 3f, - 3f);
+		steer.setAllowableClosedLoopErr(0);
+		drive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		drive.configNominalOutputVoltage(+ 0.0, - 0.0);
+		drive.configPeakOutputVoltage(+ 12.0, - 0.0);
+		drive.setProfile(0);
+		drive.setP(0.2);
+		drive.setI(0);
+		drive.setD(0);
+		drive.setF(0);
+		drive.reverseSensor(false);
+		this.podNumber = podNumber;
+		this.offSet = offSet; 
 		zeroSensorsAndThrottle(); 
 		enableClosedLoopAngle();
 		enableClosedLoopSpeed(); 
@@ -73,13 +104,11 @@ public class Pod extends Subsystem {
     	post(); 
     	
     }
-
 	public void setWheelSpeed(double speed){
 		targetSpeed = speed;
 		enableClosedLoopSpeed();
 		post();
 	}
-
 	public void intiDefaultCommand() {
 		
 	}
@@ -91,6 +120,14 @@ public class Pod extends Subsystem {
 		SmartDashboard.putNumber("Pod" + podNumber + "/Target Speed", targetSpeed);
 		SmartDashboard.putNumber("Pod" + podNumber + "/Current Angle", steer.get());
     	SmartDashboard.putNumber("Pod" + podNumber + "/Tagret Angle", targetPosition);
+	}
+	public int getOffSet() {
+		return offSet;
+				
+	}
+	public void setOffSet(int offSet) {
+		this.offSet = offSet;
+				
 	}
 @Override
 protected void initDefaultCommand() {
