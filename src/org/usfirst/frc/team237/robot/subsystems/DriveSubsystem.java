@@ -14,15 +14,12 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class DriveSubsystem extends Subsystem {
 
 	private Pod frontLeft, frontRight, rearLeft, rearRight;
-	private AHRS gyro; 
 	public DriveSubsystem()
 	{
-		frontRight = new Pod(RobotMap.DriveMap.frontRight, RobotMap.DriveMap.frontRightSteering, 0);
-		frontLeft  = new Pod(RobotMap.DriveMap.frontLeft,  RobotMap.DriveMap.frontLeftSteering,  1);
-		rearLeft   = new Pod(RobotMap.DriveMap.rearLeft,   RobotMap.DriveMap.rearLeftSteering,   2);
-		rearRight  = new Pod(RobotMap.DriveMap.rearRight,  RobotMap.DriveMap.rearRightSteering,  3);
-		
-		gyro = new AHRS(SerialPort.Port.kMXP);
+		frontRight = new Pod(RobotMap.DriveMap.frontRight, RobotMap.DriveMap.frontRightSteering, 0, RobotMap.DriveMap.frontRightOffset);
+		frontLeft  = new Pod(RobotMap.DriveMap.frontLeft,  RobotMap.DriveMap.frontLeftSteering,  1, RobotMap.DriveMap.frontLeftOffset);
+		rearLeft   = new Pod(RobotMap.DriveMap.rearLeft,   RobotMap.DriveMap.rearLeftSteering,   2, RobotMap.DriveMap.rearLeftOffset);
+		rearRight  = new Pod(RobotMap.DriveMap.rearRight,  RobotMap.DriveMap.rearRightSteering,  3, RobotMap.DriveMap.rearRightOffset);
 	}
 	/* ---pass in a polar vector and angle the robot will move in that direction and rotation ---*/
 	public void autoDrive(double mag, double theta){
@@ -96,7 +93,7 @@ public class DriveSubsystem extends Subsystem {
 		rearRight .setSteeringAngle (rearRightSteeringAngle);
 		rearRight .setWheelSpeed    (rearRightWheelSpeed);
 	}
-	public void testPod(int pod, double speed, double angle)
+	public void testPodClosedLoop(int pod, double speed, double angle)
 	{
 		if (pod == 0){
 			frontRight.setSteeringAngle(angle);
@@ -113,6 +110,25 @@ public class DriveSubsystem extends Subsystem {
 		else if (pod == 3){
 			rearRight.setSteeringAngle(angle);
 			rearRight.setWheelSpeed(speed);
+		}
+	}
+	public void testPodPercentVBus(int pod, double speed, double angle)
+	{
+		if (pod == 0){
+			frontRight.setPercentVBusSteer(angle);
+			frontRight.setPercentVBusDrive(speed);
+		}
+		else if (pod == 1){
+			frontLeft.setPercentVBusSteer(angle);
+			frontLeft.setPercentVBusDrive(speed);
+		}
+		else if (pod == 2){
+			rearLeft.setPercentVBusSteer(angle);
+			rearLeft.setPercentVBusDrive(speed);
+		}
+		else if (pod == 3){
+			rearRight.setPercentVBusSteer(angle);
+			rearRight.setPercentVBusDrive(speed);
 		}
 	}
 	public void post(){

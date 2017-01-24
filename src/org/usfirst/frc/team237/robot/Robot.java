@@ -108,9 +108,9 @@ public class Robot extends IterativeRobot {
 		
 		Scheduler.getInstance().run();
 		double angle,speed; 
-		speed = OI.strafeJoystick.getRawAxis(0);
-		angle = OI.rotateJoystick.getRawAxis(0);
-		driveTrain.testPod(0, speed, angle);
+		//speed = OI.rotateJoystick.getRawAxis(0);
+		angle = OI.rotateJoystick.getRawAxis(1);
+		driveTrain.testPodClosedLoop(3, 0, 0);
 		driveTrain.post();
 	}
 

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class OI {
 	
-	public static Joystick strafeJoystick = new Joystick(0);
+	public static Joystick strafeJoystick = new Joystick(1);
 	public static Joystick rotateJoystick = new Joystick(0);
 	
 	public OI()
