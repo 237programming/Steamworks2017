@@ -111,6 +111,9 @@ public class Robot extends IterativeRobot {
 		//speed = OI.rotateJoystick.getRawAxis(0);
 		angle = OI.rotateJoystick.getRawAxis(1);
 		driveTrain.testPodClosedLoop(3, 0, 0);
+		driveTrain.testPodClosedLoop(2, 0, 0);
+		driveTrain.testPodClosedLoop(1, 0, 0);
+		driveTrain.testPodClosedLoop(0, 0, 0);
 		driveTrain.post();
 	}
 

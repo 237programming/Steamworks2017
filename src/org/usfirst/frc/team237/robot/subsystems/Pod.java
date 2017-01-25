@@ -25,15 +25,17 @@ public class Pod extends Subsystem {
 		drive = new CANTalon(driveTalon);
 		steer = new CANTalon(steeringTalon);
 		steer.setFeedbackDevice(FeedbackDevice.AnalogPot);
+		steerPID = new PIDController(.2,0,0,steer,steer);
 		steer.reverseSensor(false);
-		steer.setP(0.5);
-		steer.setI(0);
-		steer.setD(0);
-		steer.setF(0);
-		steer.setProfile(0);
+//		steer.setP(12.0);
+//		steer.setI(0);
+//		steer.setD(0);
+//		steer.setF(0);
+//		steer.setProfile(0);
 		steer.configNominalOutputVoltage(+ 0.0, - 0.0);
 		steer.configPeakOutputVoltage(+ 12f, - 12f);
 		steer.setAllowableClosedLoopErr(0);
+		steerPID.setContinuous();
 		drive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		drive.configNominalOutputVoltage(+ 0.0, - 0.0);
 		drive.configPeakOutputVoltage(+ 12.0, - 0.0);
@@ -53,16 +55,14 @@ public class Pod extends Subsystem {
 	public Pod(int driveTalon, int steeringTalon, int podNumber, int offset){	
 		drive = new CANTalon(driveTalon);
 		steer = new CANTalon(steeringTalon);
+		steerPID = new PIDController(0.005,0,0,steer,steer);
 		steer.setFeedbackDevice(FeedbackDevice.AnalogPot);
+		steerPID.setInputRange(0, 1023);
+		steerPID.setOutputRange(-1.0, 1.0);
+		steerPID.setContinuous();
 		steer.reverseSensor(false);
-		steer.setP(0.5);
-		steer.setI(0);
-		steer.setD(0);
-		steer.setF(0);
-		steer.setProfile(0);
 		steer.configNominalOutputVoltage(+ 0.0, - 0.0);
 		steer.configPeakOutputVoltage(+ 12f, - 12f);
-		steer.setAllowableClosedLoopErr(0);
 		drive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		drive.configNominalOutputVoltage(+ 0.0, - 0.0);
 		drive.configPeakOutputVoltage(+ 12.0, - 0.0);
@@ -98,9 +98,9 @@ public class Pod extends Subsystem {
 		
 	}
 	public void enableClosedLoopAngle(){
-		steer.setVoltageRampRate(0);
-		steer.changeControlMode(TalonControlMode.Position);
-		steer.set(MathStuff.mapAngleToEnc(targetPosition));
+		steerPID.enable();
+		steer.changeControlMode(TalonControlMode.PercentVbus);
+		steerPID.setSetpoint(MathStuff.mapAngleToEnc(targetPosition)-offset);
 	
 	}
     public void setSteeringAngle(double angle) {
@@ -123,17 +123,17 @@ public class Pod extends Subsystem {
 		SmartDashboard.putNumber("Pod" + podNumber + "/Steer Closed Loop Error", steer.getClosedLoopError());
 		SmartDashboard.putNumber("Pod" + podNumber + "/Motor Speed", drive.getSpeed());
 		SmartDashboard.putNumber("Pod" + podNumber + "/Target Speed", targetSpeed);
-		SmartDashboard.putNumber("Pod" + podNumber + "/Current Angle", MathStuff.mapEncToAngle(steer.get()));
-    	SmartDashboard.putNumber("Pod" + podNumber + "/Tagret Angle", targetPosition);
+		SmartDashboard.putNumber("Pod" + podNumber + "/Current PID Output", steerPID.get());
+    	SmartDashboard.putNumber("Pod" + podNumber + "/Tagret Encoder", targetPosition);
     	SmartDashboard.putNumber("Pod" + podNumber + "/Drive/P",drive.getP() );
     	SmartDashboard.putNumber("Pod" + podNumber + "/Drive/I",drive.getI() );
     	SmartDashboard.putNumber("Pod" + podNumber + "/Drive/D",drive.getD() );
     	SmartDashboard.putNumber("Pod" + podNumber + "/Drive/F",drive.getF() );
     	
-    	SmartDashboard.putNumber("Pod" + podNumber + "/Steer/P",steer.getP() );
-    	SmartDashboard.putNumber("Pod" + podNumber + "/Steer/I",steer.getI() );
-    	SmartDashboard.putNumber("Pod" + podNumber + "/Steer/D",steer.getD() );
-    	SmartDashboard.putNumber("Pod" + podNumber + "/Steer/F",steer.getF() );
+    	//SmartDashboard.putNumber("Pod" + podNumber + "/Steer/P",steer.getP() );
+    	//SmartDashboard.putNumber("Pod" + podNumber + "/Steer/I",steer.getI() );
+    	//SmartDashboard.putNumber("Pod" + podNumber + "/Steer/D",steer.getD() );
+    	//SmartDashboard.putNumber("Pod" + podNumber + "/Steer/F",steer.getF() );
 	}
 	public int getOffSet() {
 		return offset;
