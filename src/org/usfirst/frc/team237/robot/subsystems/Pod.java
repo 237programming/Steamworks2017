@@ -71,6 +71,7 @@ public class Pod extends Subsystem {
 		drive.setI(0.002);
 		drive.setD(6.0);
 		drive.setF(0.11);
+		drive.setAllowableClosedLoopErr(300);
 		drive.reverseSensor(false);
 		this.podNumber = podNumber;
 		this.offset = offset; 
@@ -100,7 +101,12 @@ public class Pod extends Subsystem {
 	public void enableClosedLoopAngle(){
 		steerPID.enable();
 		steer.changeControlMode(TalonControlMode.PercentVbus);
-		steerPID.setSetpoint(MathStuff.mapAngleToEnc(targetPosition)-offset);
+		double setPoint = MathStuff.mapAngleToEnc(targetPosition)+offset;
+		if (setPoint > 1023)
+		{
+			setPoint -= 1024; 
+		}
+		steerPID.setSetpoint(setPoint);
 	
 	}
     public void setSteeringAngle(double angle) {
@@ -123,6 +129,7 @@ public class Pod extends Subsystem {
 		SmartDashboard.putNumber("Pod" + podNumber + "/Steer Closed Loop Error", steer.getClosedLoopError());
 		SmartDashboard.putNumber("Pod" + podNumber + "/Motor Speed", drive.getSpeed());
 		SmartDashboard.putNumber("Pod" + podNumber + "/Target Speed", targetSpeed);
+		SmartDashboard.putNumber("Pod" + podNumber + "/Steering Encoder", steer.getAnalogInRaw());
 		SmartDashboard.putNumber("Pod" + podNumber + "/Current PID Output", steerPID.get());
     	SmartDashboard.putNumber("Pod" + podNumber + "/Tagret Encoder", targetPosition);
     	SmartDashboard.putNumber("Pod" + podNumber + "/Drive/P",drive.getP() );

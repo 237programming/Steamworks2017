@@ -1,5 +1,6 @@
 package org.usfirst.frc.team237.robot.subsystems;
 
+import org.usfirst.frc.team237.robot.MathStuff;
 import org.usfirst.frc.team237.robot.OI;
 import org.usfirst.frc.team237.robot.RobotMap;
 
@@ -7,6 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -32,10 +34,11 @@ public class DriveSubsystem extends Subsystem {
 	public void teleopDrive()
 	{
 		double x, y, rotate;
-		x = OI.strafeJoystick.getRawAxis(0);
-		y = OI.strafeJoystick.getRawAxis(0);
-		rotate = OI.rotateJoystick.getRawAxis(0);
+		x = OI.strafeJoystick.getX();
+		y = -OI.strafeJoystick.getY();
+		rotate = MathStuff.mapStickToAngle(OI.rotateJoystick.getRawAxis(0));
 		
+		//rotate = 0; 
 		//calculate angle/speed setpoints using 30x30 in. robot
 		calcWheelsFromRectCoords(x,y,rotate); 
 	}
@@ -77,13 +80,24 @@ public class DriveSubsystem extends Subsystem {
 			rearLeftWheelSpeed   /= max;
 			rearRightWheelSpeed  /= max;
 		}
+		frontRightWheelSpeed *= RobotMap.DriveMap.maxSpeed;
+		frontLeftWheelSpeed  *= RobotMap.DriveMap.maxSpeed;
+		rearLeftWheelSpeed   *= RobotMap.DriveMap.maxSpeed;
+		rearRightWheelSpeed  *= RobotMap.DriveMap.maxSpeed;
 		
 		//find steering angles
-		double frontRightSteeringAngle = Math.atan2(B, C) * 180/Math.PI;
-		double frontLeftSteeringAngle  = Math.atan2(B, D) * 180/Math.PI;
-		double rearLeftSteeringAngle   = Math.atan2(A, D) * 180/Math.PI;
-		double rearRightSteeringAngle  = Math.atan2(A, C) * 180/Math.PI;
-
+		double frontRightSteeringAngle = Math.toDegrees(Math.atan2(B, C));
+		double frontLeftSteeringAngle  = Math.toDegrees(Math.atan2(B, D));
+		double rearLeftSteeringAngle   = Math.toDegrees(Math.atan2(A, D));
+		double rearRightSteeringAngle  = Math.toDegrees(Math.atan2(A, C));
+		SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", frontRightSteeringAngle);
+		SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", frontLeftSteeringAngle);
+		SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", frontRightSteeringAngle);
+		SmartDashboard.putNumber("DriveTrain/Pod 3/Angle", frontLeftSteeringAngle);
+		SmartDashboard.putNumber("DriveTrain/Pod 0/Speed", frontRightWheelSpeed);
+		SmartDashboard.putNumber("DriveTrain/Pod 1/Speed", frontLeftWheelSpeed);
+		SmartDashboard.putNumber("DriveTrain/Pod 2/Speed", frontRightWheelSpeed);
+		SmartDashboard.putNumber("DriveTrain/Pod 3/Speed", frontLeftWheelSpeed);
 		frontRight.setSteeringAngle (frontRightSteeringAngle);
 		frontRight.setWheelSpeed    (frontRightWheelSpeed);
 		frontLeft .setSteeringAngle (frontLeftSteeringAngle);
@@ -136,6 +150,7 @@ public class DriveSubsystem extends Subsystem {
 		frontRight.post();
 		rearLeft.post();
 		frontLeft.post();
+		
 	}
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
