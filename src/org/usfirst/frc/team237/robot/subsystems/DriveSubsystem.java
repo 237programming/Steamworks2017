@@ -6,22 +6,35 @@ import org.usfirst.frc.team237.robot.RobotMap;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
  */
-public class DriveSubsystem extends Subsystem {
-
+public class DriveSubsystem extends Subsystem implements PIDOutput   {
+	
 	private Pod frontLeft, frontRight, rearLeft, rearRight;
+	private PIDController angularCtrl;
+	private AHRS gyro; 
+	private double angularTarget = 0;
+	private double currentX, currentY; 
 	public DriveSubsystem()
 	{
 		frontRight = new Pod(RobotMap.DriveMap.frontRight, RobotMap.DriveMap.frontRightSteering, 0, RobotMap.DriveMap.frontRightOffset);
 		frontLeft  = new Pod(RobotMap.DriveMap.frontLeft,  RobotMap.DriveMap.frontLeftSteering,  1, RobotMap.DriveMap.frontLeftOffset);
 		rearLeft   = new Pod(RobotMap.DriveMap.rearLeft,   RobotMap.DriveMap.rearLeftSteering,   2, RobotMap.DriveMap.rearLeftOffset);
 		rearRight  = new Pod(RobotMap.DriveMap.rearRight,  RobotMap.DriveMap.rearRightSteering,  3, RobotMap.DriveMap.rearRightOffset);
+	
+		// Instantiate gyro for field oriented drive
+		//gyro = new AHRS(SerialPort.Port.kMXP);
+		// instantiate PID for field oriented drive
+		//angularCtrl = new PIDController(0.03,0,0,gyro,this);
+		//angularCtrl.disable();
 	}
 	/* ---pass in a polar vector and angle the robot will move in that direction and rotation ---*/
 	public void autoDrive(double mag, double theta){
@@ -89,7 +102,7 @@ public class DriveSubsystem extends Subsystem {
 		double frontRightSteeringAngle = Math.toDegrees(Math.atan2(B, C));
 		double frontLeftSteeringAngle  = Math.toDegrees(Math.atan2(B, D));
 		double rearLeftSteeringAngle   = Math.toDegrees(Math.atan2(A, D));
-		double rearRightSteeringAngle  = Math.toDegrees(Math.atan2(A, C));
+		double rearRightSteeringAngle  = Math.toDegrees(Math.atan2(C, A));
 		SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", frontRightSteeringAngle);
 		SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", frontLeftSteeringAngle);
 		SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", frontRightSteeringAngle);
@@ -156,5 +169,10 @@ public class DriveSubsystem extends Subsystem {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
     }
+	@Override
+	public void pidWrite(double output) {
+		// TODO Auto-generated method stub
+		calcWheelsFromRectCoords(currentX,currentY,output);
+	}
 }
 

@@ -12,11 +12,22 @@ public final class MathStuff {
 	}
 	public static double mapAngleToEnc(double angle)
 	{
-		return (angle - 0)*(1023-0)/(360 - 0) + 0;
+		if (angle>=0){
+			return (angle - 0)*(1023-512)/(180 - 0) + 0;
+		} 
+		else {
+			return (angle - -180)*(511 - 0)/(-1 - -180) + 0;
+		}
+		
 	}
 	public static double mapEncToAngle(double enc)
 	{
-		return (enc - 0)*(360- 0)/(1023 - 0) + 0;
+		if (enc>=512){
+			return (enc - 512)*(180-0)/(1023 - 512) + 0;
+		} 
+		else {
+			return (enc - 0)*(0 - -180)/(511 - 0) + -180;
+		}
 	}
 	public static double mapStickToAngle(double stick)
 	{
