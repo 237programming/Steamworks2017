@@ -102,7 +102,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput   {
 		double frontRightSteeringAngle = Math.toDegrees(Math.atan2(B, C));
 		double frontLeftSteeringAngle  = Math.toDegrees(Math.atan2(B, D));
 		double rearLeftSteeringAngle   = Math.toDegrees(Math.atan2(A, D));
-		double rearRightSteeringAngle  = Math.toDegrees(Math.atan2(C, A));
+		double rearRightSteeringAngle  = Math.toDegrees(Math.atan2(A, C));
 		SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", frontRightSteeringAngle);
 		SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", frontLeftSteeringAngle);
 		SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", frontRightSteeringAngle);

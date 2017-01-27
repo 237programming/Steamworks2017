@@ -13,7 +13,7 @@ public final class MathStuff {
 	public static double mapAngleToEnc(double angle)
 	{
 		if (angle>=0){
-			return (angle - 0)*(1023-512)/(180 - 0) + 0;
+			return (angle - 0)*(1023-512)/(180 - 0) + 512;
 		} 
 		else {
 			return (angle - -180)*(511 - 0)/(-1 - -180) + 0;
