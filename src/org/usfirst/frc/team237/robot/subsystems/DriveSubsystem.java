@@ -16,31 +16,54 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  *
  */
-public class DriveSubsystem extends Subsystem implements PIDOutput   {
+public class DriveSubsystem extends Subsystem   {
 	
-	//private Pod frontLeft, frontRight, rearLeft, rearRight;
+	private double x, y, rotate;
 	private Pod pod0, pod1, pod2, pod3;
-	private PIDController angularCtrl;
+	
 	private AHRS gyro; 
 	private double angularTarget = 0;
-	private double currentX, currentY; 
+	private double currentX=0, currentY=0; 
+	private boolean fieldOriented = false; 
 	public DriveSubsystem()
 	{
-//		frontRight = new Pod(RobotMap.DriveMap.frontRight, RobotMap.DriveMap.frontRightSteering, 0, RobotMap.DriveMap.frontRightOffset);
-//		frontLeft  = new Pod(RobotMap.DriveMap.frontLeft,  RobotMap.DriveMap.frontLeftSteering,  1, RobotMap.DriveMap.frontLeftOffset);
-//		rearLeft   = new Pod(RobotMap.DriveMap.rearLeft,   RobotMap.DriveMap.rearLeftSteering,   2, RobotMap.DriveMap.rearLeftOffset);
-//		rearRight  = new Pod(RobotMap.DriveMap.rearRight,  RobotMap.DriveMap.rearRightSteering,  3, RobotMap.DriveMap.rearRightOffset);
 
-		pod0 = new Pod(RobotMap.DriveMap.pod0, RobotMap.DriveMap.pod0Steering, 0, RobotMap.DriveMap.pod0Offset); //FrontRight 1_____0
+		pod0 = new Pod(RobotMap.DriveMap.pod0, RobotMap.DriveMap.pod0Steering, 0, RobotMap.DriveMap.pod0Offset); //FrontRight 2_____1
 		pod1 = new Pod(RobotMap.DriveMap.pod1, RobotMap.DriveMap.pod1Steering, 1, RobotMap.DriveMap.pod1Offset); //FrontLeft  |  ^  |
 		pod2 = new Pod(RobotMap.DriveMap.pod2, RobotMap.DriveMap.pod2Steering, 2, RobotMap.DriveMap.pod2Offset); //RearLeft   |  |  |
-		pod3 = new Pod(RobotMap.DriveMap.pod3, RobotMap.DriveMap.pod3Steering, 3, RobotMap.DriveMap.pod3Offset); //RearRight  2_____3
+		pod3 = new Pod(RobotMap.DriveMap.pod3, RobotMap.DriveMap.pod3Steering, 3, RobotMap.DriveMap.pod3Offset); //RearRight  3_____0
 	
 		// Instantiate gyro for field oriented drive
-		//gyro = new AHRS(SerialPort.Port.kMXP);
-		// instantiate PID for field oriented drive
-		//angularCtrl = new PIDController(0.03,0,0,gyro,this);
-		//angularCtrl.disable();
+		gyro = new AHRS(SerialPort.Port.kMXP);
+		gyro.reset();
+		// instantiate PID for field oriented drive (F.O.D
+		
+	}
+	/* ---Enable F.O.D.--- */ 
+	public void enableFOD()
+	{
+		angularTarget = gyro.pidGet();
+		fieldOriented = true;
+	}
+	/* ---Disable F.O.D.--- */
+	public void disableFOD()
+	{
+		fieldOriented = false; 
+	}
+	/* ---Check F.O.D.--- */
+	public boolean fieldOriented()
+	{
+		return fieldOriented; 
+	}
+	/* ---return Drive Train angular target for F.O.D.--- */
+	public double angularTarget()
+	{
+		return angularTarget; 
+	}
+	/* ---Set F.O.D. target angle--- */
+	public void setAngularTarget(double target)
+	{
+		angularTarget = target; 
 	}
 	/* ---pass in a polar vector and angle the robot will move in that direction and rotation ---*/
 	public void autoDrive(double mag, double theta){
@@ -52,14 +75,35 @@ public class DriveSubsystem extends Subsystem implements PIDOutput   {
 	/* ---Drive the Robot in teleop. two joystick input ---*/
 	public void teleopDrive()
 	{
-		double x, y, rotate;
-		x = OI.strafeJoystick.getX();
+		x = -OI.strafeJoystick.getX();
 		y = -OI.strafeJoystick.getY();
-		rotate = MathStuff.mapStickToAngle(OI.rotateJoystick.getRawAxis(0));
+		rotate = -OI.rotateJoystick.getX();
 		
+		//cubic ramping
+		x = Math.pow(x, 3);
+		y = Math.pow(y, 3);
+		//rotate = Math.pow(rotate, 3);
+		
+		if (Math.abs(x) < .1)
+			x = 0;
+		if (Math.abs(y) < .1)
+			y = 0;
+		if (Math.abs(rotate) < .1)
+			rotate = 0;
+		rotate = MathStuff.mapStickToAngle(rotate/20);
+		if (fieldOriented){
+			double gyro_degrees = gyro.getYaw(); 
+			double gyro_radians = gyro_degrees * Math.PI/180; 
+			double temp = y * Math.cosh(gyro_radians) + x * Math.sinh(gyro_radians);
+			x = -y * Math.sinh(gyro_radians) + x * Math.cosh(gyro_radians);
+			y = temp; 
+			calcWheelsFromRectCoords(x,y,rotate); 
+		} else {
+			calcWheelsFromRectCoords(x,y,rotate); 
+		}
 		//rotate = 0; 
 		//calculate angle/speed setpoints using 30x30 in. robot
-		calcWheelsFromRectCoords(x,y,rotate); 
+		
 	}
 	private void calcWheelsFromRectCoords(double x, double y, double rotate)
 	{
@@ -72,10 +116,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput   {
 		double D = y + rotate * (W / R);
 		
 		//find wheel speeds		
-		double pod0WheelSpeed = Math.sqrt((B * B) + (C * C));
-		double pod1WheelSpeed = Math.sqrt((B * B) + (D * D));
-		double pod2WheelSpeed = Math.sqrt((A * A) + (D * D));
-		double pod3WheelSpeed = Math.sqrt((A * A) + (C * C));
+		double pod2WheelSpeed = Math.sqrt((B * B) + (C * C));  // FRONT RIGHT
+		double pod1WheelSpeed = Math.sqrt((B * B) + (D * D));  // FRONT LEFT
+		double pod0WheelSpeed = Math.sqrt((A * A) + (D * D));  // REAR LEFT
+		double pod3WheelSpeed = Math.sqrt((A * A) + (C * C));  // REAR RIGHT
 
 		//normalize wheel speeds
 		double max = pod0WheelSpeed;
@@ -105,14 +149,14 @@ public class DriveSubsystem extends Subsystem implements PIDOutput   {
 		pod3WheelSpeed *= RobotMap.DriveMap.maxSpeed;
 		
 		//find steering angles
-		double pod0SteeringAngle = Math.toDegrees(Math.atan2(B, C));
-		double pod1SteeringAngle  = Math.toDegrees(Math.atan2(B, D));
-		double pod2SteeringAngle   = Math.toDegrees(Math.atan2(A, D));
-		double pod3SteeringAngle  = Math.toDegrees(Math.atan2(A, C));
+		double pod2SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
+		double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
+		double pod0SteeringAngle = Math.toDegrees(Math.atan2(A, D)); //REAR LEFT 
+		double pod3SteeringAngle = Math.toDegrees(Math.atan2(A, C)); //REAR RIGHT 
 		SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", pod0SteeringAngle);
 		SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", pod1SteeringAngle);
-		SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", pod0SteeringAngle);
-		SmartDashboard.putNumber("DriveTrain/Pod 3/Angle", pod1SteeringAngle);
+		SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", pod2SteeringAngle);
+		SmartDashboard.putNumber("DriveTrain/Pod 3/Angle", pod3SteeringAngle);
 		SmartDashboard.putNumber("DriveTrain/Pod 0/Speed", pod0WheelSpeed);
 		SmartDashboard.putNumber("DriveTrain/Pod 1/Speed", pod1WheelSpeed);
 		SmartDashboard.putNumber("DriveTrain/Pod 2/Speed", pod0WheelSpeed);
@@ -169,16 +213,17 @@ public class DriveSubsystem extends Subsystem implements PIDOutput   {
 		pod0.post();
 		pod2.post();
 		pod1.post();
-		
+		SmartDashboard.putNumber("DriveTrain/X Ramp:", -x);
+		SmartDashboard.putNumber("DriveTrain/X Actual:", OI.strafeJoystick.getX());
+		SmartDashboard.putNumber("DriveTrain/Y Ramp:", y);
+		SmartDashboard.putNumber("DriveTrain/Y Actual:", -OI.strafeJoystick.getY());
+		SmartDashboard.putNumber("DriveTrain/Rotate Ramp:", -rotate);
+		SmartDashboard.putNumber("DriveTrain/Rotate Actual:", OI.rotateJoystick.getRawAxis(0));
 	}
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
     }
-	@Override
-	public void pidWrite(double output) {
-		// TODO Auto-generated method stub
-		calcWheelsFromRectCoords(currentX,currentY,output);
-	}
+
 }
 

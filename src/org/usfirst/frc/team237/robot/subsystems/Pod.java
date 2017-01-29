@@ -40,10 +40,10 @@ public class Pod extends Subsystem {
 		drive.configNominalOutputVoltage(+ 0.0, - 0.0);
 		drive.configPeakOutputVoltage(+ 12.0, - 0.0);
 		drive.setProfile(0);
-		drive.setP(0.2);
-		drive.setI(0);
-		drive.setD(0);
-		drive.setF(0);
+		drive.setP(0.20);
+		drive.setI(0.002);
+		drive.setD(6.0);
+		drive.setF(0.11);
 		drive.reverseSensor(false);
 		this.podNumber = podNumber;
 		this.offset = 0; 
@@ -65,13 +65,13 @@ public class Pod extends Subsystem {
 		steer.configPeakOutputVoltage(+ 12f, - 12f);
 		drive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		drive.configNominalOutputVoltage(+ 0.0, - 0.0);
-		drive.configPeakOutputVoltage(+ 12.0, - 0.0);
+		drive.configPeakOutputVoltage(+ 12.0, - 4.0);
 		drive.setProfile(0);
 		drive.setP(0.20);
 		drive.setI(0.002);
 		drive.setD(6.0);
 		drive.setF(0.11);
-		drive.setAllowableClosedLoopErr(300);
+		drive.setAllowableClosedLoopErr(200);
 		drive.reverseSensor(false);
 		this.podNumber = podNumber;
 		this.offset = offset; 
@@ -105,6 +105,8 @@ public class Pod extends Subsystem {
 		if (setPoint > 1023)
 		{
 			setPoint -= 1024; 
+		} else if (setPoint < 0) {
+			setPoint += 1024;
 		}
 		steerPID.setSetpoint(setPoint);
 	
@@ -157,6 +159,14 @@ public class Pod extends Subsystem {
 	public void setPercentVBusDrive(double val){
 		drive.changeControlMode(TalonControlMode.PercentVbus);
 		drive.set(val);
+	}
+	public void setSteerPID(double p, double i, double d)
+	{
+		steerPID.setPID(p, i, d);
+	}
+	public void setDrivePID(double p, double i, double d)
+	{
+		drive.setPID(p, i, d);
 	}
 @Override
 protected void initDefaultCommand() {
