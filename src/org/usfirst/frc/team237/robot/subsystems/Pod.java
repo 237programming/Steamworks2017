@@ -95,19 +95,21 @@ public class Pod extends Subsystem {
 	public void enableClosedLoopSpeed(){
 		drive.setVoltageRampRate(0);
 		drive.changeControlMode(TalonControlMode.Speed);
-		drive.set(targetSpeed);
+		double currentAngleSetpoint = MathStuff.mapAngleToEnc(targetPosition)+offset;
+		double upperBound = MathStuff.normalizeEncInput(currentAngleSetpoint+200);
+		double lowerBound = MathStuff.normalizeEncInput(currentAngleSetpoint-200);
+		if (MathStuff.isInRange(steer.pidGet(), upperBound, lowerBound))
+		{
+			drive.set(targetSpeed);
+		}
+		
 		
 	}
 	public void enableClosedLoopAngle(){
 		steerPID.enable();
 		steer.changeControlMode(TalonControlMode.PercentVbus);
 		double setPoint = MathStuff.mapAngleToEnc(targetPosition)+offset;
-		if (setPoint > 1023)
-		{
-			setPoint -= 1024; 
-		} else if (setPoint < 0) {
-			setPoint += 1024;
-		}
+		setPoint = MathStuff.normalizeEncInput(setPoint);
 		steerPID.setSetpoint(setPoint);
 	
 	}

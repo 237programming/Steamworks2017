@@ -33,4 +33,33 @@ public final class MathStuff {
 	{
 		return (stick - -1)*(180 - -180)/(1 - -1) + -180;
 	}
+	public static boolean isInRange(double val, double upperBound, double lowerBound )
+	{
+		boolean flipped = false;
+		if (upperBound < lowerBound )
+		{
+			double temp = upperBound;
+			upperBound = lowerBound;
+			lowerBound = temp;
+			flipped = true; 
+		}
+		if (val <= upperBound && val >= lowerBound )
+		{
+			return !flipped; 
+		} 
+		else 
+		{
+			return flipped; 
+		}
+	}
+	public static double normalizeEncInput(double enc)
+	{
+		if (enc > 1023)
+		{
+			enc -= 1024; 
+		} else if (enc < 0) {
+			enc += 1024;
+		}
+		return enc; 
+	}
 }
