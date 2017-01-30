@@ -1,6 +1,10 @@
 package org.usfirst.frc.team237.robot;
 
+import org.usfirst.frc.team237.robot.commands.ToggleDriveOrientation;
+
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -11,9 +15,11 @@ public class OI {
 	public static Joystick strafeJoystick = new Joystick(1);
 	public static Joystick rotateJoystick = new Joystick(0);
 	
+	public static Button toggleFOD = new JoystickButton(strafeJoystick, 7);
+	
 	public OI()
 	{
-		
+		toggleFOD.whenPressed(new ToggleDriveOrientation());
 	}
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
