@@ -94,8 +94,8 @@ public class DriveSubsystem extends Subsystem   {
 		if (fieldOriented){
 			double gyro_degrees = gyro.getYaw(); 
 			double gyro_radians = gyro_degrees * Math.PI/180; 
-			double temp = y * Math.cosh(gyro_radians) + x * Math.sinh(gyro_radians);
-			x = -y * Math.sinh(gyro_radians) + x * Math.cosh(gyro_radians);
+			double temp = y * Math.cos(gyro_radians) + x * Math.sin(gyro_radians);
+			x = -y * Math.sin(gyro_radians) + x * Math.cos(gyro_radians);
 			y = temp; 
 			calcWheelsFromRectCoords(x,y,rotate); 
 		} else {
