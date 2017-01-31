@@ -15,7 +15,7 @@ public class OI {
 	public static Joystick strafeJoystick = new Joystick(1);
 	public static Joystick rotateJoystick = new Joystick(0);
 	
-	public static Button toggleFOD = new JoystickButton(strafeJoystick, 7);
+	public static Button toggleFOD = new JoystickButton(strafeJoystick, 2);
 	
 	public OI()
 	{

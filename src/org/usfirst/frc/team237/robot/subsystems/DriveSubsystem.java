@@ -25,6 +25,7 @@ public class DriveSubsystem extends Subsystem   {
 	private double angularTarget = 0;
 	private double currentX=0, currentY=0; 
 	private boolean fieldOriented = false; 
+	private boolean inDeadBand = false; 
 	public DriveSubsystem()
 	{
 
@@ -88,8 +89,18 @@ public class DriveSubsystem extends Subsystem   {
 			x = 0;
 		if (Math.abs(y) < .1)
 			y = 0;
+		
 		if (Math.abs(rotate) < .1)
 			rotate = 0;
+		
+		if (Math.abs(y)< .1 && Math.abs(x)< .1 && Math.abs(rotate) < 0.1)
+		{
+			inDeadBand = true; 
+		} 
+		else {
+			inDeadBand = false;
+			
+		}
 		rotate = MathStuff.mapStickToAngle(rotate/20);
 		if (fieldOriented){
 			double gyro_degrees = gyro.getYaw(); 
@@ -149,25 +160,28 @@ public class DriveSubsystem extends Subsystem   {
 		pod3WheelSpeed *= RobotMap.DriveMap.maxSpeed;
 		
 		//find steering angles
-		double pod2SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
-		double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
-		double pod0SteeringAngle = Math.toDegrees(Math.atan2(A, D)); //REAR LEFT 
-		double pod3SteeringAngle = Math.toDegrees(Math.atan2(A, C)); //REAR RIGHT 
-		SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", pod0SteeringAngle);
-		SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", pod1SteeringAngle);
-		SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", pod2SteeringAngle);
-		SmartDashboard.putNumber("DriveTrain/Pod 3/Angle", pod3SteeringAngle);
+		if (!inDeadBand){
+			double pod2SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
+			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
+			double pod0SteeringAngle = Math.toDegrees(Math.atan2(A, D)); //REAR LEFT 
+			double pod3SteeringAngle = Math.toDegrees(Math.atan2(A, C)); //REAR RIGHT
+			SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", pod0SteeringAngle);
+			SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", pod1SteeringAngle);
+			SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", pod2SteeringAngle);
+			SmartDashboard.putNumber("DriveTrain/Pod 3/Angle", pod3SteeringAngle);
+			pod0.setSteeringAngle (pod0SteeringAngle);
+			pod1.setSteeringAngle (pod1SteeringAngle);
+			pod2.setSteeringAngle (pod2SteeringAngle);
+			pod3.setSteeringAngle (pod3SteeringAngle);
+		}
+		
 		SmartDashboard.putNumber("DriveTrain/Pod 0/Speed", pod0WheelSpeed);
 		SmartDashboard.putNumber("DriveTrain/Pod 1/Speed", pod1WheelSpeed);
 		SmartDashboard.putNumber("DriveTrain/Pod 2/Speed", pod0WheelSpeed);
 		SmartDashboard.putNumber("DriveTrain/Pod 3/Speed", pod1WheelSpeed);
-		pod0.setSteeringAngle (pod0SteeringAngle);
 		pod0.setWheelSpeed    (pod0WheelSpeed);
-		pod1.setSteeringAngle (pod1SteeringAngle);
 		pod1.setWheelSpeed    (pod1WheelSpeed);
-		pod2.setSteeringAngle (pod2SteeringAngle);
 		pod2.setWheelSpeed    (pod2WheelSpeed);
-		pod3.setSteeringAngle (pod3SteeringAngle);
 		pod3.setWheelSpeed    (pod3WheelSpeed);
 	}
 	public void testPodClosedLoop(int pod, double speed, double angle)
@@ -213,6 +227,7 @@ public class DriveSubsystem extends Subsystem   {
 		pod0.post();
 		pod2.post();
 		pod1.post();
+		SmartDashboard.putBoolean("DriveTrain/Field Oriented", fieldOriented);
 		SmartDashboard.putNumber("DriveTrain/X Ramp:", -x);
 		SmartDashboard.putNumber("DriveTrain/X Actual:", OI.strafeJoystick.getX());
 		SmartDashboard.putNumber("DriveTrain/Y Ramp:", y);

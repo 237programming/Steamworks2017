@@ -13,8 +13,8 @@ public class RobotMap {
 	public class DriveMap
 	{
 		//
-		public static final int pod0Offset = 112-512; //FrontRight 2_____1
-		public static final int pod1Offset = 555-512; //FrontLeft  |  ^  |
+		public static final int pod0Offset = 102-512; //FrontRight 2_____1
+		public static final int pod1Offset = 590-512; //FrontLeft  |  ^  |
 		public static final int pod2Offset = 208-512; //RearLeft   |  |  |
 		public static final int pod3Offset = 836-512; //RearRight  3_____0
 		
