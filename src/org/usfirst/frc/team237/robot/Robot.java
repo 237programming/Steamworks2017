@@ -1,16 +1,17 @@
 
 package org.usfirst.frc.team237.robot;
 
+import org.usfirst.frc.team237.robot.commands.ExampleCommand;
+import org.usfirst.frc.team237.robot.subsystems.DriveSubsystem;
+import org.usfirst.frc.team237.robot.subsystems.ExampleSubsystem;
+
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import org.usfirst.frc.team237.robot.commands.ExampleCommand;
-import org.usfirst.frc.team237.robot.subsystems.ExampleSubsystem;
-import org.usfirst.frc.team237.robot.subsystems.*;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -22,7 +23,8 @@ public class Robot extends IterativeRobot {
 
 	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
 	public static OI oi;
-	public static DriveSubsystem driveTrain = new DriveSubsystem(); 
+	public static DriveSubsystem driveTrain = new DriveSubsystem();
+//	public static CameraServer camServer;
 	
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
@@ -33,6 +35,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+//		camServer = CameraServer.getInstance();
+//		camServer.startAutomaticCapture("cam0", 0);
 		oi = new OI();
 		chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());

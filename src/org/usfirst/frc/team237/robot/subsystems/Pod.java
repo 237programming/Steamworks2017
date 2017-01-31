@@ -65,7 +65,7 @@ public class Pod extends Subsystem {
 		steer.configPeakOutputVoltage(+ 12f, - 12f);
 		drive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		drive.configNominalOutputVoltage(+ 0.0, - 0.0);
-		drive.configPeakOutputVoltage(+ 12.0, - 4.0);
+		drive.configPeakOutputVoltage(+ 12.0, - 0.0);
 		drive.setProfile(0);
 		drive.setP(0.20);
 		drive.setI(0.002);
@@ -95,13 +95,13 @@ public class Pod extends Subsystem {
 	public void enableClosedLoopSpeed(){
 		drive.setVoltageRampRate(0);
 		drive.changeControlMode(TalonControlMode.Speed);
-		double currentAngleSetpoint = MathStuff.mapAngleToEnc(targetPosition)+offset;
-		double upperBound = MathStuff.normalizeEncInput(currentAngleSetpoint+200);
-		double lowerBound = MathStuff.normalizeEncInput(currentAngleSetpoint-200);
-		if (MathStuff.isInRange(steer.pidGet(), upperBound, lowerBound))
-		{
+		//double currentAngleSetpoint = MathStuff.mapAngleToEnc(targetPosition)+offset;
+		//double upperBound = MathStuff.normalizeEncInput(currentAngleSetpoint+200);
+		//double lowerBound = MathStuff.normalizeEncInput(currentAngleSetpoint-200);
+		//if (MathStuff.isInRange(steer.pidGet(), upperBound, lowerBound))
+		//{
 			drive.set(targetSpeed);
-		}
+		//}
 		
 		
 	}

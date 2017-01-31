@@ -25,7 +25,9 @@ public class DriveSubsystem extends Subsystem   {
 	private double angularTarget = 0;
 	private double currentX=0, currentY=0; 
 	private boolean fieldOriented = false; 
-	private boolean inDeadBand = false; 
+	private boolean inDeadBand = false;
+	private double joystickDeadband = 0.05;
+	
 	public DriveSubsystem()
 	{
 
@@ -78,22 +80,22 @@ public class DriveSubsystem extends Subsystem   {
 	{
 		x = -OI.strafeJoystick.getX();
 		y = -OI.strafeJoystick.getY();
-		rotate = -OI.rotateJoystick.getX();
+		rotate = -OI.strafeJoystick.getZ();
 		
 		//cubic ramping
-		x = Math.pow(x, 3);
-		y = Math.pow(y, 3);
+//		x = Math.pow(x, 3);
+//		y = Math.pow(y, 3);
 		//rotate = Math.pow(rotate, 3);
 		
-		if (Math.abs(x) < .1)
+		if (Math.abs(x) < joystickDeadband)
 			x = 0;
-		if (Math.abs(y) < .1)
+		if (Math.abs(y) < joystickDeadband)
 			y = 0;
 		
-		if (Math.abs(rotate) < .1)
+		if (Math.abs(rotate) < joystickDeadband)
 			rotate = 0;
 		
-		if (Math.abs(y)< .1 && Math.abs(x)< .1 && Math.abs(rotate) < 0.1)
+		if (Math.abs(y)< joystickDeadband && Math.abs(x)< joystickDeadband && Math.abs(rotate) < joystickDeadband)
 		{
 			inDeadBand = true; 
 		} 
@@ -160,6 +162,7 @@ public class DriveSubsystem extends Subsystem   {
 		pod3WheelSpeed *= RobotMap.DriveMap.maxSpeed;
 		
 		//find steering angles
+		// controls to keep wheels from turning when stick returns to zero 
 		if (!inDeadBand){
 			double pod2SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
 			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
@@ -233,7 +236,7 @@ public class DriveSubsystem extends Subsystem   {
 		SmartDashboard.putNumber("DriveTrain/Y Ramp:", y);
 		SmartDashboard.putNumber("DriveTrain/Y Actual:", -OI.strafeJoystick.getY());
 		SmartDashboard.putNumber("DriveTrain/Rotate Ramp:", -rotate);
-		SmartDashboard.putNumber("DriveTrain/Rotate Actual:", OI.rotateJoystick.getRawAxis(0));
+		SmartDashboard.putNumber("DriveTrain/Rotate Actual:", OI.rotateJoystick.getZ());
 	}
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
