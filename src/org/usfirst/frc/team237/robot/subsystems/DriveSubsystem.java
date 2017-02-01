@@ -52,6 +52,7 @@ public class DriveSubsystem extends Subsystem   {
 	public void disableFOD()
 	{
 		fieldOriented = false; 
+		angularTarget = 0; 
 	}
 	/* ---Check F.O.D.--- */
 	public boolean fieldOriented()
@@ -82,9 +83,11 @@ public class DriveSubsystem extends Subsystem   {
 		y = -OI.strafeJoystick.getY();
 		rotate = -OI.strafeJoystick.getZ();
 		
+			
+			
 		//cubic ramping
-//		x = Math.pow(x, 3);
-//		y = Math.pow(y, 3);
+		x = Math.pow(x, 3);
+		y = Math.pow(y, 3);
 		//rotate = Math.pow(rotate, 3);
 		
 		if (Math.abs(x) < joystickDeadband)
@@ -94,7 +97,20 @@ public class DriveSubsystem extends Subsystem   {
 		
 		if (Math.abs(rotate) < joystickDeadband)
 			rotate = 0;
-		
+//		if (fieldOriented) {
+//			if (rotate > joystickDeadband){
+//				angularTarget += 0.005;
+//				if (angularTarget > 360){
+//					angularTarget -= 360;
+//				}
+//			}
+//			else if (rotate < -joystickDeadband){
+//				angularTarget -= 0.005;
+//				if (angularTarget < 360){
+//					angularTarget -= 360;
+//				}
+//			}
+//		}
 		if (Math.abs(y)< joystickDeadband && Math.abs(x)< joystickDeadband && Math.abs(rotate) < joystickDeadband)
 		{
 			inDeadBand = true; 
@@ -105,14 +121,23 @@ public class DriveSubsystem extends Subsystem   {
 		}
 		rotate = MathStuff.mapStickToAngle(rotate/20);
 		if (fieldOriented){
-			double gyro_degrees = gyro.getYaw(); 
-			double gyro_radians = gyro_degrees * Math.PI/180; 
-			double temp = y * Math.cos(gyro_radians) + x * Math.sin(gyro_radians);
-			x = -y * Math.sin(gyro_radians) + x * Math.cos(gyro_radians);
-			y = temp; 
-			calcWheelsFromRectCoords(x,y,rotate); 
+//			double gyro_degrees = gyro.getYaw(); 
+//			double gyro_radians = gyro_degrees * Math.PI/180; 
+//			double temp = y * Math.cos(gyro_radians) + x * Math.sin(gyro_radians);
+//			x = -y * Math.sin(gyro_radians) + x * Math.cos(gyro_radians);
+//			y = temp;
+			
+			double theta = -gyro.getYaw();
+			double[] vector = new double[2];
+			vector[0] = x;
+			vector[1] = y;
+			vector = MathStuff.rotateVector(vector, theta);
+			calcWheelsFromRectCoords(vector[0], vector[1], rotate);
+			
+				angularTarget = gyro.getYaw();
+//			calcWheelsFromRectCoords(x,y,rotate);
 		} else {
-			calcWheelsFromRectCoords(x,y,rotate); 
+			calcWheelsFromRectCoords(x,y,rotate);
 		}
 		//rotate = 0; 
 		//calculate angle/speed setpoints using 30x30 in. robot
@@ -237,6 +262,9 @@ public class DriveSubsystem extends Subsystem   {
 		SmartDashboard.putNumber("DriveTrain/Y Actual:", -OI.strafeJoystick.getY());
 		SmartDashboard.putNumber("DriveTrain/Rotate Ramp:", -rotate);
 		SmartDashboard.putNumber("DriveTrain/Rotate Actual:", OI.rotateJoystick.getZ());
+		SmartDashboard.putNumber("DriveTrain/Gyro yaw:", gyro.getYaw());
+		SmartDashboard.putNumber("DriveTrain/Angular target:", angularTarget);
+		
 	}
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.

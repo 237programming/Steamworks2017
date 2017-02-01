@@ -62,4 +62,16 @@ public final class MathStuff {
 		}
 		return enc; 
 	}
+	
+	public static double[] rotateVector(double[] vector, double theta) {
+		theta = Math.toRadians(theta);
+		double x = vector[0];
+		double y = vector[1];
+		double rx = (x * Math.cos(theta)) - (y * Math.sin(theta));
+		double ry = (x * Math.sin(theta)) + (y * Math.cos(theta));
+		double[] result = new double[2];
+		result[0] = rx;
+		result[1] = ry;
+		return result;
+	}
 }

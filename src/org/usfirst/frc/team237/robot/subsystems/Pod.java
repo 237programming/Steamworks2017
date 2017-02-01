@@ -95,6 +95,7 @@ public class Pod extends Subsystem {
 	public void enableClosedLoopSpeed(){
 		drive.setVoltageRampRate(0);
 		drive.changeControlMode(TalonControlMode.Speed);
+		drive.clearIAccum();
 		//double currentAngleSetpoint = MathStuff.mapAngleToEnc(targetPosition)+offset;
 		//double upperBound = MathStuff.normalizeEncInput(currentAngleSetpoint+200);
 		//double lowerBound = MathStuff.normalizeEncInput(currentAngleSetpoint-200);
