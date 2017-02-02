@@ -40,10 +40,11 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 		gyro = new AHRS(SerialPort.Port.kMXP);
 		gyro.reset();
 		// instantiate PID for field oriented drive (F.O.D
-		angularPID = new PIDController(0.02, 0.0, 0.0, gyro, this);
+		angularPID = new PIDController(0.1, 0.001, 0.0, gyro, this);
 		angularPID.disable();
 		angularPID.setInputRange(-180, 180);
 		angularPID.setOutputRange(-180, 180);
+		angularPID.setPercentTolerance(20);
 		angularPID.setContinuous();
 	}
 	/* ---Enable F.O.D.--- */ 
@@ -124,15 +125,13 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 //			x = -y * Math.sin(gyro_radians) + x * Math.cos(gyro_radians);
 //			y = temp;
 			
-			double theta = -gyro.getYaw();
+			double theta = - gyro.getYaw();
 			double[] vector = new double[2];
 			vector[0] = x;
 			vector[1] = y;
 			vector = MathStuff.rotateVector(vector, theta);
-			x = vector[0];
-			y = vector[1];
 			//angularTarget = gyro.getYaw();
-			calcWheelsFromRectCoords(x,y,correctionAngle);
+			calcWheelsFromRectCoords(vector[0],vector[1],correctionAngle);
 		} else {
 			calcWheelsFromRectCoords(x,y,rotate);
 		}
@@ -185,7 +184,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 		
 		//find steering angles
 		// controls to keep wheels from turning when stick returns to zero 
-		if (!inDeadBand){
+		if (!inDeadBand ){
 			double pod2SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
 			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
 			double pod0SteeringAngle = Math.toDegrees(Math.atan2(A, D)); //REAR LEFT 
@@ -199,7 +198,20 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 			pod2.setSteeringAngle (pod2SteeringAngle);
 			pod3.setSteeringAngle (pod3SteeringAngle);
 		}
-		
+		else if (fieldOriented ){
+			double pod2SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
+			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
+			double pod0SteeringAngle = Math.toDegrees(Math.atan2(A, D)); //REAR LEFT 
+			double pod3SteeringAngle = Math.toDegrees(Math.atan2(A, C)); //REAR RIGHT
+			SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", pod0SteeringAngle);
+			SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", pod1SteeringAngle);
+			SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", pod2SteeringAngle);
+			SmartDashboard.putNumber("DriveTrain/Pod 3/Angle", pod3SteeringAngle);
+			pod0.setSteeringAngle (pod0SteeringAngle);
+			pod1.setSteeringAngle (pod1SteeringAngle);
+			pod2.setSteeringAngle (pod2SteeringAngle);
+			pod3.setSteeringAngle (pod3SteeringAngle);
+		}
 		SmartDashboard.putNumber("DriveTrain/Pod 0/Speed", pod0WheelSpeed);
 		SmartDashboard.putNumber("DriveTrain/Pod 1/Speed", pod1WheelSpeed);
 		SmartDashboard.putNumber("DriveTrain/Pod 2/Speed", pod0WheelSpeed);
@@ -270,7 +282,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
     }
 	@Override
 	public void pidWrite(double output) {
-		correctionAngle = output; 
+		correctionAngle = -output; 
 	}
 
 }
