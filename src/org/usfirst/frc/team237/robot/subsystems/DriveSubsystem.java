@@ -16,21 +16,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  *
  */
-public class DriveSubsystem extends Subsystem   {
+public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	
 	private double x, y, rotate;
 	private Pod pod0, pod1, pod2, pod3;
 	
 	private AHRS gyro; 
 	private double angularTarget = 0;
+	private double correctionAngle = 0; 
 	private double currentX=0, currentY=0; 
 	private boolean fieldOriented = false; 
 	private boolean inDeadBand = false;
 	private double joystickDeadband = 0.05;
-	
+	private PIDController angularPID; 
 	public DriveSubsystem()
 	{
-
 		pod0 = new Pod(RobotMap.DriveMap.pod0, RobotMap.DriveMap.pod0Steering, 0, RobotMap.DriveMap.pod0Offset); //FrontRight 2_____1
 		pod1 = new Pod(RobotMap.DriveMap.pod1, RobotMap.DriveMap.pod1Steering, 1, RobotMap.DriveMap.pod1Offset); //FrontLeft  |  ^  |
 		pod2 = new Pod(RobotMap.DriveMap.pod2, RobotMap.DriveMap.pod2Steering, 2, RobotMap.DriveMap.pod2Offset); //RearLeft   |  |  |
@@ -40,13 +40,18 @@ public class DriveSubsystem extends Subsystem   {
 		gyro = new AHRS(SerialPort.Port.kMXP);
 		gyro.reset();
 		// instantiate PID for field oriented drive (F.O.D
-		
+		angularPID = new PIDController(0.02, 0.0, 0.0, gyro, this);
+		angularPID.disable();
+		angularPID.setInputRange(-180, 180);
+		angularPID.setOutputRange(-180, 180);
+		angularPID.setContinuous();
 	}
 	/* ---Enable F.O.D.--- */ 
 	public void enableFOD()
 	{
 		angularTarget = gyro.pidGet();
 		fieldOriented = true;
+		enableAngularControl();
 	}
 	/* ---Disable F.O.D.--- */
 	public void disableFOD()
@@ -68,6 +73,11 @@ public class DriveSubsystem extends Subsystem   {
 	public void setAngularTarget(double target)
 	{
 		angularTarget = target; 
+	}
+	public void enableAngularControl()
+	{
+		angularPID.setSetpoint(angularTarget);
+		angularPID.enable();
 	}
 	/* ---pass in a polar vector and angle the robot will move in that direction and rotation ---*/
 	public void autoDrive(double mag, double theta){
@@ -97,29 +107,16 @@ public class DriveSubsystem extends Subsystem   {
 		
 		if (Math.abs(rotate) < joystickDeadband)
 			rotate = 0;
-//		if (fieldOriented) {
-//			if (rotate > joystickDeadband){
-//				angularTarget += 0.005;
-//				if (angularTarget > 360){
-//					angularTarget -= 360;
-//				}
-//			}
-//			else if (rotate < -joystickDeadband){
-//				angularTarget -= 0.005;
-//				if (angularTarget < 360){
-//					angularTarget -= 360;
-//				}
-//			}
-//		}
+
 		if (Math.abs(y)< joystickDeadband && Math.abs(x)< joystickDeadband && Math.abs(rotate) < joystickDeadband)
 		{
 			inDeadBand = true; 
 		} 
 		else {
 			inDeadBand = false;
-			
+			rotate = MathStuff.mapStickToAngle(rotate/20);
 		}
-		rotate = MathStuff.mapStickToAngle(rotate/20);
+		
 		if (fieldOriented){
 //			double gyro_degrees = gyro.getYaw(); 
 //			double gyro_radians = gyro_degrees * Math.PI/180; 
@@ -132,10 +129,10 @@ public class DriveSubsystem extends Subsystem   {
 			vector[0] = x;
 			vector[1] = y;
 			vector = MathStuff.rotateVector(vector, theta);
-			calcWheelsFromRectCoords(vector[0], vector[1], rotate);
-			
-				angularTarget = gyro.getYaw();
-//			calcWheelsFromRectCoords(x,y,rotate);
+			x = vector[0];
+			y = vector[1];
+			//angularTarget = gyro.getYaw();
+			calcWheelsFromRectCoords(x,y,correctionAngle);
 		} else {
 			calcWheelsFromRectCoords(x,y,rotate);
 		}
@@ -264,12 +261,17 @@ public class DriveSubsystem extends Subsystem   {
 		SmartDashboard.putNumber("DriveTrain/Rotate Actual:", OI.rotateJoystick.getZ());
 		SmartDashboard.putNumber("DriveTrain/Gyro yaw:", gyro.getYaw());
 		SmartDashboard.putNumber("DriveTrain/Angular target:", angularTarget);
+		SmartDashboard.putNumber("DriveTrain/Correction Angle:", correctionAngle);
 		
 	}
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
     }
+	@Override
+	public void pidWrite(double output) {
+		correctionAngle = output; 
+	}
 
 }
 
