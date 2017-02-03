@@ -60,7 +60,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	public void disableFOD()
 	{
 		fieldOriented = false; 
-		angularTarget = 0; 
+		angularTarget = 0;
+		angularPID.disable();
 	}
 	/* ---Check F.O.D.--- */
 	public boolean fieldOriented()
@@ -82,19 +83,29 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	{
 		angularPID.setSetpoint(angularTarget);
 		angularPID.enable();
-	}
+	}	
 	public void enableRotateTo()
 	{
 		angularPID.disable();
 		angularPID.setPID(0.2, 0.0, 0.0);
 		enableAngularControl(); 
 	}
+	public void disableRotateTo()
+	{
+		angularPID.disable();
+	}
+	
+	public double getYaw()
+	{
+		return gyro.pidGet();
+	}
+	
 	/* ---pass in a polar vector and angle the robot will move in that direction and rotation ---*/
-	public void autoDrive(double mag, double theta){
+	public void autoDrive(double mag, double headingTheta, double baseTheta) {
 		double x,y; 
-		x = mag*Math.cos(Math.toRadians(theta));
-		y = mag*Math.sin(Math.toRadians(theta));
-		calcWheelsFromRectCoords(x,y,theta);
+		x = mag*Math.cos(Math.toRadians(headingTheta));
+		y = mag*Math.sin(Math.toRadians(headingTheta));
+		calcWheelsFromRectCoords(x,y,baseTheta);
 	}
 	public void PIDDrive()
 	{
@@ -152,7 +163,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 		//calculate angle/speed setpoints using 30x30 in. robot
 		
 	}
-	private void calcWheelsFromRectCoords(double x, double y, double rotate)
+	public void calcWheelsFromRectCoords(double x, double y, double rotate)
 	{
 		//calculate angle/speed setpoints using 30x30 in. robot
 		double L = 30, W = 30;
