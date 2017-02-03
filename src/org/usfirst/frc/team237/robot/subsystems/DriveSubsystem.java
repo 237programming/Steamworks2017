@@ -20,7 +20,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	
 	private double x, y, rotate;
 	private Pod pod0, pod1, pod2, pod3;
-	
+	private double targetX = 0;
+	private double targetY = 0;
 	private AHRS gyro; 
 	private double angularTarget = 0;
 	private double correctionAngle = 0; 
@@ -95,6 +96,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 		y = mag*Math.sin(Math.toRadians(theta));
 		calcWheelsFromRectCoords(x,y,theta);
 	}
+	public void PIDDrive()
+	{
+		calcWheelsFromRectCoords(targetX,targetY,correctionAngle); 
+	}
 	/* ---Drive the Robot in teleop. two joystick input ---*/
 	public void teleopDrive()
 	{
@@ -139,7 +144,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 			vector[1] = y;
 			vector = MathStuff.rotateVector(vector, theta);
 			//angularTarget = gyro.getYaw();
-			calcWheelsFromRectCoords(vector[0],vector[1],correctionAngle);
+			//calcWheelsFromRectCoords(vector[0],vector[1],correctionAngle);
 		} else {
 			calcWheelsFromRectCoords(x,y,rotate);
 		}
@@ -197,10 +202,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
 			double pod0SteeringAngle = Math.toDegrees(Math.atan2(A, D)); //REAR LEFT 
 			double pod3SteeringAngle = Math.toDegrees(Math.atan2(A, C)); //REAR RIGHT
-			SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", pod0SteeringAngle);
-			SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", pod1SteeringAngle);
-			SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", pod2SteeringAngle);
-			SmartDashboard.putNumber("DriveTrain/Pod 3/Angle", pod3SteeringAngle);
+//			SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", pod0SteeringAngle);
+//			SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", pod1SteeringAngle);
+//			SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", pod2SteeringAngle);
+//			SmartDashboard.putNumber("DriveTrain/Pod 3/Angle", pod3SteeringAngle);
 			pod0.setSteeringAngle (pod0SteeringAngle);
 			pod1.setSteeringAngle (pod1SteeringAngle);
 			pod2.setSteeringAngle (pod2SteeringAngle);
@@ -211,19 +216,19 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
 			double pod0SteeringAngle = Math.toDegrees(Math.atan2(A, D)); //REAR LEFT 
 			double pod3SteeringAngle = Math.toDegrees(Math.atan2(A, C)); //REAR RIGHT
-			SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", pod0SteeringAngle);
-			SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", pod1SteeringAngle);
-			SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", pod2SteeringAngle);
-			SmartDashboard.putNumber("DriveTrain/Pod 3/Angle", pod3SteeringAngle);
+//			SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", pod0SteeringAngle);
+//			SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", pod1SteeringAngle);
+//			SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", pod2SteeringAngle);
+//			SmartDashboard.putNumber("DriveTrain/Pod 3/Angle", pod3SteeringAngle);
 			pod0.setSteeringAngle (pod0SteeringAngle);
 			pod1.setSteeringAngle (pod1SteeringAngle);
 			pod2.setSteeringAngle (pod2SteeringAngle);
 			pod3.setSteeringAngle (pod3SteeringAngle);
 		}
-		SmartDashboard.putNumber("DriveTrain/Pod 0/Speed", pod0WheelSpeed);
-		SmartDashboard.putNumber("DriveTrain/Pod 1/Speed", pod1WheelSpeed);
-		SmartDashboard.putNumber("DriveTrain/Pod 2/Speed", pod0WheelSpeed);
-		SmartDashboard.putNumber("DriveTrain/Pod 3/Speed", pod1WheelSpeed);
+//		SmartDashboard.putNumber("DriveTrain/Pod 0/Speed", pod0WheelSpeed);
+//		SmartDashboard.putNumber("DriveTrain/Pod 1/Speed", pod1WheelSpeed);
+//		SmartDashboard.putNumber("DriveTrain/Pod 2/Speed", pod0WheelSpeed);
+//		SmartDashboard.putNumber("DriveTrain/Pod 3/Speed", pod1WheelSpeed);
 		pod0.setWheelSpeed    (pod0WheelSpeed);
 		pod1.setWheelSpeed    (pod1WheelSpeed);
 		pod2.setWheelSpeed    (pod2WheelSpeed);
