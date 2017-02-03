@@ -1,11 +1,11 @@
 
 package org.usfirst.frc.team237.robot;
 
-import org.usfirst.frc.team237.robot.commands.ExampleCommand;
+import org.usfirst.frc.team237.robot.commands.DriveForTimeAtSpeed;
+import org.usfirst.frc.team237.robot.commands.RotateTo;
 import org.usfirst.frc.team237.robot.subsystems.DriveSubsystem;
 import org.usfirst.frc.team237.robot.subsystems.ExampleSubsystem;
 
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -24,6 +24,7 @@ public class Robot extends IterativeRobot {
 	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
 	public static OI oi;
 	public static DriveSubsystem driveTrain = new DriveSubsystem();
+	
 //	public static CameraServer camServer;
 	
 	Command autonomousCommand;
@@ -38,7 +39,7 @@ public class Robot extends IterativeRobot {
 //		camServer = CameraServer.getInstance();
 //		camServer.startAutomaticCapture("cam0", 0);
 		oi = new OI();
-		chooser.addDefault("Default Auto", new ExampleCommand());
+		chooser.addDefault("Default Auto", autonomousCommand);
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
 	}
@@ -50,7 +51,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-
+		
 	}
 
 	@Override
@@ -72,13 +73,20 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = chooser.getSelected();
-
+		autonomousCommand = new DriveForTimeAtSpeed(1, 0.4, 0, 1);
+		
 		/*
-		 * String autoSelected = SmartDashboard.getString("Auto Selector",
-		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-		 * = new MyAutoCommand(); break; case "Default Auto": default:
-		 * autonomousCommand = new ExampleCommand(); break; }
+		String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
+		
+		switch(autoSelected) {
+			case "My Auto":
+				autonomousCommand = new MyAutoCommand();
+				break;
+			case "Default Auto":
+				default:
+					autonomousCommand = new ExampleCommand();
+					break;
+		}
 		 */
 
 		// schedule the autonomous command (example)
@@ -111,7 +119,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		
 		Scheduler.getInstance().run();
-		double angle,speed; 
+		double angle, speed; 
 		//speed = OI.rotateJoystick.getRawAxis(0);
 		angle = OI.rotateJoystick.getRawAxis(1);
 		driveTrain.teleopDrive();

@@ -8,17 +8,19 @@ import edu.wpi.first.wpilibj.command.Command;
 public class DriveForTimeAtSpeed extends Command {
 	double seconds;
 	double speed;
-	double angle;
+	double headingTheta;
+	double baseTheta;
 	
 	Timer time;
 	
-	public DriveForTimeAtSpeed(double seconds, double speed, double angle) {
+	public DriveForTimeAtSpeed(double seconds, double speed, double headingTheta, double baseTheta) {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.driveTrain);
 		
 		this.seconds = seconds;
 		this.speed = speed;
-		this.angle = angle;
+		this.headingTheta = headingTheta + 90;
+		this.baseTheta = baseTheta;
 	}
 
 	// Called just before this Command runs the first time
@@ -31,25 +33,25 @@ public class DriveForTimeAtSpeed extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.driveTrain.autoDrive(speed, angle);
+		Robot.driveTrain.autoDrive(speed, headingTheta, baseTheta);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return time.get() > seconds;
+		return time.get() >= seconds;
 	}
 
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-		Robot.driveTrain.autoDrive(0, angle);
+		Robot.driveTrain.autoDrive(0, headingTheta, 0);
 	}
 
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
 	@Override
 	protected void interrupted() {
-		Robot.driveTrain.autoDrive(0, angle);
+		Robot.driveTrain.autoDrive(0, headingTheta, 0);
 	}
 }

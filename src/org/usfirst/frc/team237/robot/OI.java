@@ -1,5 +1,6 @@
 package org.usfirst.frc.team237.robot;
 
+import org.usfirst.frc.team237.robot.commands.DriveForTimeAtSpeed;
 import org.usfirst.frc.team237.robot.commands.ToggleDriveOrientation;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -19,7 +20,8 @@ public class OI {
 	
 	public OI()
 	{
-		toggleFOD.whenPressed(new ToggleDriveOrientation());
+//		toggleFOD.whenPressed(new ToggleDriveOrientation());
+		toggleFOD.whenPressed(new DriveForTimeAtSpeed(2, 0.4, 180, 0));
 	}
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
