@@ -40,7 +40,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 		gyro = new AHRS(SerialPort.Port.kMXP);
 		gyro.reset();
 		// instantiate PID for field oriented drive (F.O.D
-		angularPID = new PIDController(0.1, 0.001, 0.0, gyro, this);
+		angularPID = new PIDController(0.1, 0.001, 0.0, gyro, this); 
 		angularPID.disable();
 		angularPID.setInputRange(-180, 180);
 		angularPID.setOutputRange(-180, 180);
@@ -52,6 +52,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	{
 		angularTarget = gyro.pidGet();
 		fieldOriented = true;
+		angularPID.setPID(0.1, 0.001, 0.0);
 		enableAngularControl();
 	}
 	/* ---Disable F.O.D.--- */
@@ -75,10 +76,17 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	{
 		angularTarget = target; 
 	}
+	/* ---Enable Angular Correction in Drive train--- */
 	public void enableAngularControl()
 	{
 		angularPID.setSetpoint(angularTarget);
 		angularPID.enable();
+	}
+	public void enableRotateTo()
+	{
+		angularPID.disable();
+		angularPID.setPID(0.2, 0.0, 0.0);
+		enableAngularControl(); 
 	}
 	/* ---pass in a polar vector and angle the robot will move in that direction and rotation ---*/
 	public void autoDrive(double mag, double theta){
