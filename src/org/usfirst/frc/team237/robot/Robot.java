@@ -73,7 +73,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = new DriveForTimeAtSpeed(1, 0.4, 0, 1);
+		autonomousCommand = new RotateTo(45);
 		
 		/*
 		String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
@@ -100,6 +100,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		driveTrain.post();
 	}
 
 	@Override

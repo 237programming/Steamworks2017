@@ -87,12 +87,14 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	public void enableRotateTo()
 	{
 		angularPID.disable();
-		angularPID.setPID(0.2, 0.0, 0.0);
+		angularPID.setPID(0.1, 0.0, 0.0);
 		enableAngularControl(); 
 	}
 	public void disableRotateTo()
 	{
 		angularPID.disable();
+		autoDrive(0,0,0);
+		
 	}
 	
 	public double getYaw()
@@ -109,7 +111,11 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	}
 	public void PIDDrive()
 	{
-		calcWheelsFromRectCoords(targetX,targetY,correctionAngle); 
+		if (Math.abs(correctionAngle)<1){
+			calcWheelsFromRectCoords(targetX,targetY,0);
+		} else {
+			calcWheelsFromRectCoords(targetX,targetY,correctionAngle); 
+		}
 	}
 	/* ---Drive the Robot in teleop. two joystick input ---*/
 	public void teleopDrive()
@@ -154,8 +160,11 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 			vector[0] = x;
 			vector[1] = y;
 			vector = MathStuff.rotateVector(vector, theta);
+			targetX = vector[0];
+			targetY = vector[1];
 			//angularTarget = gyro.getYaw();
 			//calcWheelsFromRectCoords(vector[0],vector[1],correctionAngle);
+			PIDDrive(); 
 		} else {
 			calcWheelsFromRectCoords(x,y,rotate);
 		}
@@ -306,7 +315,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
     }
 	@Override
 	public void pidWrite(double output) {
-		correctionAngle = -output; 
+		correctionAngle = output; 
+	}
+	public void zeroGyro(){
+		gyro.zeroYaw();
 	}
 
 }

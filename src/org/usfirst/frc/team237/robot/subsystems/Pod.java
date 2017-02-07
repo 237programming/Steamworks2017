@@ -96,15 +96,7 @@ public class Pod extends Subsystem {
 		drive.setVoltageRampRate(0);
 		drive.changeControlMode(TalonControlMode.Speed);
 		drive.clearIAccum();
-		//double currentAngleSetpoint = MathStuff.mapAngleToEnc(targetPosition)+offset;
-		//double upperBound = MathStuff.normalizeEncInput(currentAngleSetpoint+200);
-		//double lowerBound = MathStuff.normalizeEncInput(currentAngleSetpoint-200);
-		//if (MathStuff.isInRange(steer.pidGet(), upperBound, lowerBound))
-		//{
-			drive.set(targetSpeed);
-		//}
-		
-		
+		drive.set(targetSpeed);
 	}
 	public void enableClosedLoopAngle(){
 		steerPID.enable();

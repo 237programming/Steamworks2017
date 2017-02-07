@@ -2,6 +2,7 @@ package org.usfirst.frc.team237.robot;
 
 import org.usfirst.frc.team237.robot.commands.DriveForTimeAtSpeed;
 import org.usfirst.frc.team237.robot.commands.ToggleDriveOrientation;
+import org.usfirst.frc.team237.robot.commands.ZeroGyro;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -17,11 +18,13 @@ public class OI {
 	public static Joystick rotateJoystick = new Joystick(0);
 	
 	public static Button toggleFOD = new JoystickButton(strafeJoystick, 1);
+	public static Button zeroGyro = new JoystickButton(rotateJoystick, 1);
 	
 	public OI()
 	{
-//		toggleFOD.whenPressed(new ToggleDriveOrientation());
-		toggleFOD.whenPressed(new DriveForTimeAtSpeed(2, 0.4, 180, 0));
+		toggleFOD.whenPressed(new ToggleDriveOrientation());
+		zeroGyro.whenPressed(new ZeroGyro());
+		//toggleFOD.whenPressed(new DriveForTimeAtSpeed(2, 0.4, 180, 0));
 	}
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
