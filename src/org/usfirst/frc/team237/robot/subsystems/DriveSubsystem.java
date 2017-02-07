@@ -51,6 +51,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	/* ---Enable F.O.D.--- */ 
 	public void enableFOD()
 	{
+		angularPID.disable();
 		angularTarget = gyro.pidGet();
 		fieldOriented = true;
 		angularPID.setPID(0.1, 0.001, 0.0);
