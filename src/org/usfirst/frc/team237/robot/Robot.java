@@ -1,11 +1,12 @@
 
 package org.usfirst.frc.team237.robot;
 
-import org.usfirst.frc.team237.robot.commands.DriveForTimeAtSpeed;
 import org.usfirst.frc.team237.robot.commands.RotateTo;
 import org.usfirst.frc.team237.robot.subsystems.DriveSubsystem;
 import org.usfirst.frc.team237.robot.subsystems.ExampleSubsystem;
 
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -21,6 +22,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 
+	private DigitalInput digitalIn;
+	private AnalogInput analogIn;
 	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
 	public static OI oi;
 	public static DriveSubsystem driveTrain = new DriveSubsystem();
@@ -42,6 +45,9 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("Default Auto", autonomousCommand);
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
+		
+		digitalIn = new DigitalInput(0);
+		analogIn = new AnalogInput(0);
 	}
 
 	/**
@@ -58,6 +64,8 @@ public class Robot extends IterativeRobot {
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
 		driveTrain.post();
+		SmartDashboard.putBoolean("Digital Input", digitalIn.get());
+		SmartDashboard.putNumber("Analog Input", analogIn.getVoltage());
 	}
 
 	/**
