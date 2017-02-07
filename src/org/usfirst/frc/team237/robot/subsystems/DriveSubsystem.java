@@ -316,7 +316,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
     }
 	@Override
 	public void pidWrite(double output) {
-		correctionAngle = output; 
+		correctionAngle = -output; 
 	}
 	public void zeroGyro(){
 		gyro.zeroYaw();
