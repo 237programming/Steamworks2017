@@ -28,6 +28,7 @@ public class DriveForTimeAtSpeed extends Command {
 	protected void initialize() {
 		time = new Timer();
 		time.start();
+		Robot.driveTrain.zeroSpeeds();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -46,6 +47,7 @@ public class DriveForTimeAtSpeed extends Command {
 	@Override
 	protected void end() {
 		Robot.driveTrain.autoDrive(0, headingTheta, 0);
+		Robot.driveTrain.zeroSpeeds();
 	}
 
 	// Called when another command which requires one or more of the same
@@ -53,5 +55,6 @@ public class DriveForTimeAtSpeed extends Command {
 	@Override
 	protected void interrupted() {
 		Robot.driveTrain.autoDrive(0, headingTheta, 0);
+		Robot.driveTrain.zeroSpeeds();
 	}
 }

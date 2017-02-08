@@ -1,7 +1,7 @@
 
 package org.usfirst.frc.team237.robot;
 
-import org.usfirst.frc.team237.robot.commands.RotateTo;
+import org.usfirst.frc.team237.robot.commands.autonomous.RedRightGear;
 import org.usfirst.frc.team237.robot.subsystems.DriveSubsystem;
 import org.usfirst.frc.team237.robot.subsystems.ExampleSubsystem;
 
@@ -81,7 +81,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = new RotateTo(45);
+		autonomousCommand = new RedRightGear();
 		
 		/*
 		String autoSelected = SmartDashboard.getString("Auto Selector", "Default");

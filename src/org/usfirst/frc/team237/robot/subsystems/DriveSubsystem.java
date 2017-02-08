@@ -26,8 +26,9 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	private double angularTarget = 0;
 	private double correctionAngle = 0; 
 	private double currentX=0, currentY=0; 
-	private boolean fieldOriented = false; 
-	private boolean inDeadBand = false;
+	private boolean fieldOriented = false;
+	private boolean inDeadBand = true;
+	private boolean whileRotating = false;
 	private double joystickDeadband = 0.05;
 	private PIDController angularPID; 
 	public DriveSubsystem()
@@ -82,11 +83,13 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	/* ---Enable Angular Correction in Drive train--- */
 	public void enableAngularControl()
 	{
+		whileRotating = true;
 		angularPID.setSetpoint(angularTarget);
 		angularPID.enable();
 	}	
 	public void enableRotateTo()
 	{
+		correctionAngle = 0;
 		angularPID.disable();
 		angularPID.setPID(0.1, 0.0, 0.0);
 		enableAngularControl(); 
@@ -95,7 +98,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	{
 		angularPID.disable();
 		autoDrive(0,0,0);
-		
+		whileRotating = false;
 	}
 	
 	public double getYaw()
@@ -104,11 +107,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	}
 	
 	/* ---pass in a polar vector and angle the robot will move in that direction and rotation ---*/
-	public void autoDrive(double mag, double headingTheta, double baseTheta) {
-		double x,y; 
-		x = mag*Math.cos(Math.toRadians(headingTheta));
-		y = mag*Math.sin(Math.toRadians(headingTheta));
-		calcWheelsFromRectCoords(x,y,baseTheta);
+	public void autoDrive(double mag, double headingTheta, double baseTheta) { 
+		targetX = mag*Math.cos(Math.toRadians(headingTheta));
+		targetY= mag*Math.sin(Math.toRadians(headingTheta));
+		calcWheelsFromRectCoords(targetX, targetY, baseTheta);
 	}
 	public void PIDDrive()
 	{
@@ -173,6 +175,15 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 		//calculate angle/speed setpoints using 30x30 in. robot
 		
 	}
+	
+	public void zeroSpeeds()
+	{
+		targetX = 0;
+		targetY = 0;
+		x = 0;
+		y = 0;
+	}
+	
 	public void calcWheelsFromRectCoords(double x, double y, double rotate)
 	{
 		//calculate angle/speed setpoints using 30x30 in. robot
@@ -246,6 +257,22 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 			pod2.setSteeringAngle (pod2SteeringAngle);
 			pod3.setSteeringAngle (pod3SteeringAngle);
 		}
+		else if(whileRotating)
+		{
+			double pod2SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
+			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
+			double pod0SteeringAngle = Math.toDegrees(Math.atan2(A, D)); //REAR LEFT 
+			double pod3SteeringAngle = Math.toDegrees(Math.atan2(A, C)); //REAR RIGHT
+//			SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", pod0SteeringAngle);
+//			SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", pod1SteeringAngle);
+//			SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", pod2SteeringAngle);
+//			SmartDashboard.putNumber("DriveTrain/Pod 3/Angle", pod3SteeringAngle);
+			pod0.setSteeringAngle (pod0SteeringAngle);
+			pod1.setSteeringAngle (pod1SteeringAngle);
+			pod2.setSteeringAngle (pod2SteeringAngle);
+			pod3.setSteeringAngle (pod3SteeringAngle);
+		}
+		
 //		SmartDashboard.putNumber("DriveTrain/Pod 0/Speed", pod0WheelSpeed);
 //		SmartDashboard.putNumber("DriveTrain/Pod 1/Speed", pod1WheelSpeed);
 //		SmartDashboard.putNumber("DriveTrain/Pod 2/Speed", pod0WheelSpeed);
