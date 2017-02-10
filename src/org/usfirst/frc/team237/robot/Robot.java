@@ -2,6 +2,8 @@ package org.usfirst.frc.team237.robot;
 
 import org.usfirst.frc.team237.robot.commands.autonomous.RedRightGear;
 import org.usfirst.frc.team237.robot.subsystems.DriveSubsystem;
+import org.usfirst.frc.team237.robot.subsystems.IntakeSubsystem;
+import org.usfirst.frc.team237.robot.subsystems.ShooterSubsystem;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -18,6 +20,8 @@ public class Robot extends IterativeRobot {
 	private AnalogInput analogIn;
 	public static OI oi;
 	public static DriveSubsystem driveTrain = new DriveSubsystem();
+	public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+	public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
