@@ -8,7 +8,7 @@ import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team237.robot.MathStuff;
 
-public class Pod extends Subsystem {
+public class PodSubsystem extends Subsystem {
 	public CANTalon drive;
 	public CANTalon steer; 
 	public double targetPosition=0.0; 
@@ -16,7 +16,7 @@ public class Pod extends Subsystem {
 	public int podNumber; 
 	private int offset; 
 	private PIDController steerPID; 
-	public Pod(int driveTalon, int steeringTalon, int podNumber){	
+	public PodSubsystem(int driveTalon, int steeringTalon, int podNumber){	
 //		Pod constructor without offset
 		drive = new CANTalon(driveTalon);
 		steer = new CANTalon(steeringTalon);
@@ -46,7 +46,7 @@ public class Pod extends Subsystem {
 		enableClosedLoopAngle();
 		enableClosedLoopSpeed(); 
 	}
-	public Pod(int driveTalon, int steeringTalon, int podNumber, int offset){	
+	public PodSubsystem(int driveTalon, int steeringTalon, int podNumber, int offset){	
 //		Pod constructor with offset
 		drive = new CANTalon(driveTalon);
 		steer = new CANTalon(steeringTalon);

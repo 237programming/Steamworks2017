@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class DriveSubsystem extends Subsystem implements PIDOutput {
 	
 	private AHRS          gyro;
-	private Pod           pod0, pod1, pod2, pod3;
+	private PodSubsystem           pod0, pod1, pod2, pod3;
 	private PIDController angularPID;
 	
 	private double   x, y, rotate;
@@ -30,10 +30,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	
 	public DriveSubsystem()
 	{
-		pod0 = new Pod(RobotMap.DriveMap.pod0, RobotMap.DriveMap.pod0Steering, 0, RobotMap.DriveMap.pod0Offset); //FrontRight 2_____1
-		pod1 = new Pod(RobotMap.DriveMap.pod1, RobotMap.DriveMap.pod1Steering, 1, RobotMap.DriveMap.pod1Offset); //FrontLeft  |  ^  |
-		pod2 = new Pod(RobotMap.DriveMap.pod2, RobotMap.DriveMap.pod2Steering, 2, RobotMap.DriveMap.pod2Offset); //RearLeft   |  |  |
-		pod3 = new Pod(RobotMap.DriveMap.pod3, RobotMap.DriveMap.pod3Steering, 3, RobotMap.DriveMap.pod3Offset); //RearRight  3_____0
+		pod0 = new PodSubsystem(RobotMap.DriveMap.pod0, RobotMap.DriveMap.pod0Steering, 0, RobotMap.DriveMap.pod0Offset); //FrontRight 2_____1
+		pod1 = new PodSubsystem(RobotMap.DriveMap.pod1, RobotMap.DriveMap.pod1Steering, 1, RobotMap.DriveMap.pod1Offset); //FrontLeft  |  ^  |
+		pod2 = new PodSubsystem(RobotMap.DriveMap.pod2, RobotMap.DriveMap.pod2Steering, 2, RobotMap.DriveMap.pod2Offset); //RearLeft   |  |  |
+		pod3 = new PodSubsystem(RobotMap.DriveMap.pod3, RobotMap.DriveMap.pod3Steering, 3, RobotMap.DriveMap.pod3Offset); //RearRight  3_____0
 	
 		//Instantiate gyro for field oriented drive
 		gyro = new AHRS(SerialPort.Port.kMXP);

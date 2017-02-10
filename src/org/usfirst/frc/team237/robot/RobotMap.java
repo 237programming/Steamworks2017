@@ -1,6 +1,6 @@
 package org.usfirst.frc.team237.robot;
 
-import org.usfirst.frc.team237.robot.subsystems.Pod;
+import org.usfirst.frc.team237.robot.subsystems.PodSubsystem;
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
@@ -48,6 +48,7 @@ public class RobotMap {
 	{
 		public static final int shooterTalon = 9;
 		public static final int feederTalon = 10;
+		public static final int intakeTalon = 11;
 	}
 	
 	public class ControlMap
