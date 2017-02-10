@@ -44,6 +44,12 @@ public class RobotMap {
 		public static final double ANG_D = 0;
 	}
 	
+	public class ShooterMap
+	{
+		public static final int shooterTalon = 9;
+		public static final int intakeTalon = 10;
+	}
+	
 	public class ControlMap
 	{
 		public static final int strafeStick = 0;
