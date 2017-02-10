@@ -47,7 +47,7 @@ public class RobotMap {
 	public class ShooterMap
 	{
 		public static final int shooterTalon = 9;
-		public static final int intakeTalon = 10;
+		public static final int feederTalon = 10;
 	}
 	
 	public class ControlMap

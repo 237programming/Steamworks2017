@@ -15,14 +15,16 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class ShooterSubsystem extends Subsystem {
 	
 	CANTalon shooterTalon;
-	CANTalon intakeTalon;
+	CANTalon feederTalon;
 	
 	Relay light = new Relay(0);
+	
+	private double targetSpeed;
 	
 	public ShooterSubsystem()
 	{
 		shooterTalon = new CANTalon(RobotMap.ShooterMap.shooterTalon);
-		intakeTalon  = new CANTalon(RobotMap.ShooterMap.intakeTalon);
+		feederTalon  = new CANTalon(RobotMap.ShooterMap.feederTalon);
 		shooterTalon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		shooterTalon.changeControlMode(TalonControlMode.Speed);
 		shooterTalon.configNominalOutputVoltage(+0.0, -0.0);
@@ -32,7 +34,7 @@ public class ShooterSubsystem extends Subsystem {
 		shooterTalon.setI(0.0);
 		shooterTalon.setD(0.0);
 		shooterTalon.setF(0.0);
-		intakeTalon.changeControlMode(TalonControlMode.PercentVbus);
+		feederTalon.changeControlMode(TalonControlMode.PercentVbus);
 	}
 	
 	public void lightOn()
@@ -54,12 +56,34 @@ public class ShooterSubsystem extends Subsystem {
 	
 	public void setShooter(double speed)
 	{
+		targetSpeed = speed;
 		shooterTalon.set(speed);
 	}
 	
 	public double shooterSpeed()
 	{
 		return shooterTalon.get();
+	}
+	
+	public void feederIn()
+	{
+		feederTalon.set(1.0);
+	}
+	
+	public void feederOut()
+	{
+		feederTalon.set(-1.0);
+	}
+	
+	public void feederOff()
+	{
+		feederTalon.set(0.0);
+	}
+	
+	public boolean upToSpeed(double error)
+	{
+		return shooterSpeed() < targetSpeed + error &&
+			   shooterSpeed() > targetSpeed - error;
 	}
 	
     // Put methods for controlling this subsystem
