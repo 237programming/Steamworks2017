@@ -1,9 +1,9 @@
-
 package org.usfirst.frc.team237.robot;
 
 import org.usfirst.frc.team237.robot.commands.autonomous.RedRightGear;
 import org.usfirst.frc.team237.robot.subsystems.DriveSubsystem;
-import org.usfirst.frc.team237.robot.subsystems.ExampleSubsystem;
+import org.usfirst.frc.team237.robot.subsystems.IntakeSubsystem;
+import org.usfirst.frc.team237.robot.subsystems.ShooterSubsystem;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -13,21 +13,13 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the manifest file in the resource
- * directory.
- */
+
 public class Robot extends IterativeRobot {
 
-	
-	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
 	public static OI oi;
 	public static DriveSubsystem driveTrain = new DriveSubsystem();
-	
-//	public static CameraServer camServer;
+	public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+	public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
@@ -38,11 +30,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-//		camServer = CameraServer.getInstance();
-//		camServer.startAutomaticCapture("cam0", 0);
 		oi = new OI();
 		chooser.addDefault("Default Auto", autonomousCommand);
-		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
 	}
 
@@ -123,11 +112,9 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		
 		Scheduler.getInstance().run();
-		double angle, speed; 
-		//speed = OI.rotateJoystick.getRawAxis(0);
+		double angle, speed;
 		angle = OI.rotateJoystick.getRawAxis(1);
 		driveTrain.teleopDrive();
-		//driveTrain.testPodClosedLoop(3, 0, 0);
 		driveTrain.post();
 	}
 

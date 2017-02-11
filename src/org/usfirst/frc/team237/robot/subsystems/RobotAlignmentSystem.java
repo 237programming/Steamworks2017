@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.command.PIDSubsystem;
 public class RobotAlignmentSystem extends PIDSubsystem {
 
     // Initialize your subsystem here
-    public RobotAlignmentSystem(Pod pod0, Pod pod1, Pod pod2, Pod pod3) {
+    public RobotAlignmentSystem(PodSubsystem pod0, PodSubsystem pod1, PodSubsystem pod2, PodSubsystem pod3) {
     	super("Name",0.02,0,0 );
         // Use these to get going:
         // setSetpoint() -  Sets where the PID controller should move the system

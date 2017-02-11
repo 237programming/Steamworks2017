@@ -1,19 +1,14 @@
 package org.usfirst.frc.team237.robot.subsystems;
 
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import com.ctre.*;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team237.robot.MathStuff;
-import org.usfirst.frc.team237.robot.RobotMap;
-/**
- *
- */
-public class Pod extends Subsystem {
+
+public class PodSubsystem extends Subsystem {
 	public CANTalon drive;
 	public CANTalon steer; 
 	public double targetPosition=0.0; 
@@ -21,22 +16,22 @@ public class Pod extends Subsystem {
 	public int podNumber; 
 	private int offset; 
 	private PIDController steerPID; 
-	public Pod(int driveTalon, int steeringTalon, int podNumber){	
+	public PodSubsystem(int driveTalon, int steeringTalon, int podNumber){	
+//		Pod constructor without offset
 		drive = new CANTalon(driveTalon);
 		steer = new CANTalon(steeringTalon);
-		steer.setFeedbackDevice(FeedbackDevice.AnalogPot);
 		steerPID = new PIDController(.2,0,0,steer,steer);
-		steer.reverseSensor(false);
-//		steer.setP(12.0);
-//		steer.setI(0);
-//		steer.setD(0);
-//		steer.setF(0);
-//		steer.setProfile(0);
+		steerPID.setContinuous();
+//		Declare Talons and PIDCont. 
+		steer.setFeedbackDevice(FeedbackDevice.AnalogPot);
+		drive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+//		Math for feedback device
+		steer.reverseSensor(false);		
+		drive.reverseSensor(false);
 		steer.configNominalOutputVoltage(+ 0.0, - 0.0);
 		steer.configPeakOutputVoltage(+ 12f, - 12f);
+//		Config voltage
 		steer.setAllowableClosedLoopErr(0);
-		steerPID.setContinuous();
-		drive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		drive.configNominalOutputVoltage(+ 0.0, - 0.0);
 		drive.configPeakOutputVoltage(+ 12.0, - 0.0);
 		drive.setProfile(0);
@@ -44,26 +39,28 @@ public class Pod extends Subsystem {
 		drive.setI(0.002);
 		drive.setD(6.0);
 		drive.setF(0.11);
-		drive.reverseSensor(false);
+//		Set drive values 
 		this.podNumber = podNumber;
 		this.offset = 0; 
 		zeroSensorsAndThrottle(); 
 		enableClosedLoopAngle();
 		enableClosedLoopSpeed(); 
-		
 	}
-	public Pod(int driveTalon, int steeringTalon, int podNumber, int offset){	
+	public PodSubsystem(int driveTalon, int steeringTalon, int podNumber, int offset){	
+//		Pod constructor with offset
 		drive = new CANTalon(driveTalon);
 		steer = new CANTalon(steeringTalon);
 		steerPID = new PIDController(0.005,0,0,steer,steer);
-		steer.setFeedbackDevice(FeedbackDevice.AnalogPot);
 		steerPID.setInputRange(0, 1023);
 		steerPID.setOutputRange(-1.0, 1.0);
 		steerPID.setContinuous();
+//		Ranges
+		steer.setFeedbackDevice(FeedbackDevice.AnalogPot);
+		drive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		steer.reverseSensor(false);
+		drive.reverseSensor(false);
 		steer.configNominalOutputVoltage(+ 0.0, - 0.0);
 		steer.configPeakOutputVoltage(+ 12f, - 12f);
-		drive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		drive.configNominalOutputVoltage(+ 0.0, - 0.0);
 		drive.configPeakOutputVoltage(+ 12.0, - 0.0);
 		drive.setProfile(0);
@@ -72,13 +69,11 @@ public class Pod extends Subsystem {
 		drive.setD(6.0);
 		drive.setF(0.11);
 		drive.setAllowableClosedLoopErr(200);
-		drive.reverseSensor(false);
 		this.podNumber = podNumber;
 		this.offset = offset; 
 		zeroSensorsAndThrottle(); 
 		enableClosedLoopAngle();
 		enableClosedLoopSpeed(); 
-		
 	}
 	public void zeroSensorsAndThrottle(){
 		steer.setPosition(0);
@@ -89,12 +84,14 @@ public class Pod extends Subsystem {
 		targetSpeed = 0;
 		drive.changeControlMode(TalonControlMode.PercentVbus);
 		drive.set(0);
+//		Set Talons and positions to 0
 	}
 	public void enableClosedLoopSpeed(){
 		drive.setVoltageRampRate(0);
 		drive.changeControlMode(TalonControlMode.Speed);
 		drive.clearIAccum();
 		drive.set(targetSpeed);
+//		Enable drive to target speed from Talon
 	}
 	public void enableClosedLoopAngle(){
 		steerPID.enable();
@@ -102,23 +99,22 @@ public class Pod extends Subsystem {
 		double setPoint = MathStuff.mapAngleToEnc(targetPosition)+offset;
 		setPoint = MathStuff.normalizeEncInput(setPoint);
 		steerPID.setSetpoint(setPoint);
-	
+//		Enable angle PID and math
 	}
     public void setSteeringAngle(double angle) {
     	targetPosition = angle;
     	enableClosedLoopAngle();
     	post(); 
-    	
+//		Set angle using enableClosedLoopAngle
     }
 	public void setWheelSpeed(double speed){
 		targetSpeed = speed;
 		enableClosedLoopSpeed();
 		post();
+//		Set speed using enableClosedLoopSpeed
 	}
-	public void intiDefaultCommand() {
-		
+	public void intiDefaultCommand() {	
 	}
-	
 	public void post(){
 		SmartDashboard.putNumber("Pod" + podNumber + "/Drive Closed Loop Error", drive.getClosedLoopError());
 		SmartDashboard.putNumber("Pod" + podNumber + "/Steer Closed Loop Error", steer.getClosedLoopError());
@@ -131,19 +127,13 @@ public class Pod extends Subsystem {
     	SmartDashboard.putNumber("Pod" + podNumber + "/Drive/I",drive.getI() );
     	SmartDashboard.putNumber("Pod" + podNumber + "/Drive/D",drive.getD() );
     	SmartDashboard.putNumber("Pod" + podNumber + "/Drive/F",drive.getF() );
-    	
-    	//SmartDashboard.putNumber("Pod" + podNumber + "/Steer/P",steer.getP() );
-    	//SmartDashboard.putNumber("Pod" + podNumber + "/Steer/I",steer.getI() );
-    	//SmartDashboard.putNumber("Pod" + podNumber + "/Steer/D",steer.getD() );
-    	//SmartDashboard.putNumber("Pod" + podNumber + "/Steer/F",steer.getF() );
+//		Give SmartDash data
 	}
 	public int getOffSet() {
-		return offset;
-				
+		return offset;		
 	}
 	public void setOffSet(int offset) {
-		this.offset = offset;
-				
+		this.offset = offset;			
 	}
 	public void setPercentVBusSteer(double val){
 		steer.changeControlMode(TalonControlMode.PercentVbus);
@@ -164,6 +154,5 @@ public class Pod extends Subsystem {
 @Override
 protected void initDefaultCommand() {
 	// TODO Auto-generated method stub
-	
 }
 }

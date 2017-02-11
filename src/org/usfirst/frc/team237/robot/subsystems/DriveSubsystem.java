@@ -11,42 +11,40 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *
- */
-public class DriveSubsystem extends Subsystem implements PIDOutput  {
+public class DriveSubsystem extends Subsystem implements PIDOutput {
 	
-	private double x, y, rotate;
-	private Pod pod0, pod1, pod2, pod3;
-	private double targetX = 0;
-	private double targetY = 0;
-	private AHRS gyro; 
-	private double angularTarget = 0;
-	private double correctionAngle = 0; 
-	private double currentX=0, currentY=0; 
-	private boolean fieldOriented = false;
-	private boolean inDeadBand = true;
-	private boolean whileRotating = false;
-	private double joystickDeadband = 0.05;
+	private AHRS          gyro;
+	private PodSubsystem           pod0, pod1, pod2, pod3;
 	private PIDController angularPID;
+	
+	private double   x, y, rotate;
+	private double   targetX = 0, targetY  = 0;
+	private double   angularTarget = 0;
+	private double   correctionAngle = 0; 
+	private double   joystickDeadband = RobotMap.ControlMap.joystickDeadband;
+	
+	private boolean  fieldOriented = false;
+	private boolean  whileRotating = false;
+	private boolean  inDeadBand    = true;
+
 	private DigitalInput digitalIn;
 	private AnalogInput analogIn;
 	public DriveSubsystem()
 	{
-		pod0 = new Pod(RobotMap.DriveMap.pod0, RobotMap.DriveMap.pod0Steering, 0, RobotMap.DriveMap.pod0Offset); //FrontRight 2_____1
-		pod1 = new Pod(RobotMap.DriveMap.pod1, RobotMap.DriveMap.pod1Steering, 1, RobotMap.DriveMap.pod1Offset); //FrontLeft  |  ^  |
-		pod2 = new Pod(RobotMap.DriveMap.pod2, RobotMap.DriveMap.pod2Steering, 2, RobotMap.DriveMap.pod2Offset); //RearLeft   |  |  |
-		pod3 = new Pod(RobotMap.DriveMap.pod3, RobotMap.DriveMap.pod3Steering, 3, RobotMap.DriveMap.pod3Offset); //RearRight  3_____0
+		pod0 = new PodSubsystem(RobotMap.DriveMap.pod0, RobotMap.DriveMap.pod0Steering, 0, RobotMap.DriveMap.pod0Offset); //FrontRight 2_____1
+		pod1 = new PodSubsystem(RobotMap.DriveMap.pod1, RobotMap.DriveMap.pod1Steering, 1, RobotMap.DriveMap.pod1Offset); //FrontLeft  |  ^  |
+		pod2 = new PodSubsystem(RobotMap.DriveMap.pod2, RobotMap.DriveMap.pod2Steering, 2, RobotMap.DriveMap.pod2Offset); //RearLeft   |  |  |
+		pod3 = new PodSubsystem(RobotMap.DriveMap.pod3, RobotMap.DriveMap.pod3Steering, 3, RobotMap.DriveMap.pod3Offset); //RearRight  3_____0
 	
-		// Instantiate gyro for field oriented drive
+		//Instantiate gyro for field oriented drive
 		gyro = new AHRS(SerialPort.Port.kMXP);
 		gyro.reset();
-		// instantiate PID for field oriented drive (F.O.D
-		angularPID = new PIDController(0.1, 0.001, 0.0, gyro, this); 
+		
+		//instantiate PID for field oriented drive (F.O.D.)
+		angularPID = new PIDController(RobotMap.PIDMap.FOD_P, RobotMap.PIDMap.FOD_I, RobotMap.PIDMap.FOD_D, gyro, this); 
 		angularPID.disable();
 		angularPID.setInputRange(-180, 180);
 		angularPID.setOutputRange(-180, 180);
@@ -56,55 +54,63 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 		digitalIn = new DigitalInput(0);
 		analogIn = new AnalogInput(0);
 	}
-	/* ---Enable F.O.D.--- */ 
+	
+	//Enable F.O.D.
 	public void enableFOD()
 	{
 		angularPID.disable();
 		angularTarget = gyro.pidGet();
 		fieldOriented = true;
-		angularPID.setPID(0.1, 0.001, 0.0);
+		angularPID.setPID(RobotMap.PIDMap.FOD_P, RobotMap.PIDMap.FOD_I, RobotMap.PIDMap.FOD_D);
 		enableAngularControl();
 	}
-	/* ---Disable F.O.D.--- */
+	
+	//Disable F.O.D.
 	public void disableFOD()
 	{
 		fieldOriented = false; 
 		angularTarget = 0;
 		angularPID.disable();
 	}
-	/* ---Check F.O.D.--- */
+	
+	//Check F.O.D.
 	public boolean fieldOriented()
 	{
 		return fieldOriented; 
 	}
-	/* ---return Drive Train angular target for F.O.D.--- */
+	
+	//return Drive Train angular target for F.O.D.
 	public double angularTarget()
 	{
 		return angularTarget; 
 	}
-	/* ---Set F.O.D. target angle--- */
+	
+	//Set F.O.D. target angle
 	public void setAngularTarget(double target)
 	{
 		angularTarget = target; 
 	}
-	/* ---Enable Angular Correction in Drive train--- */
+	
+	//Enable Angular Correction in Drive train
 	public void enableAngularControl()
 	{
 		whileRotating = true;
 		angularPID.setSetpoint(angularTarget);
 		angularPID.enable();
-	}	
+	}
+	
 	public void enableRotateTo()
 	{
 		correctionAngle = 0;
 		angularPID.disable();
-		angularPID.setPID(0.1, 0.0, 0.0);
-		enableAngularControl(); 
+		angularPID.setPID(RobotMap.PIDMap.ANG_P, RobotMap.PIDMap.ANG_I, RobotMap.PIDMap.ANG_D);
+		enableAngularControl();
 	}
+	
 	public void disableRotateTo()
 	{
 		angularPID.disable();
-		autoDrive(0,0,0);
+		autoDrive(0, 0, 0);
 		whileRotating = false;
 	}
 	
@@ -113,29 +119,38 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 		return gyro.pidGet();
 	}
 	
-	/* ---pass in a polar vector and angle the robot will move in that direction and rotation ---*/
-	public void autoDrive(double mag, double headingTheta, double baseTheta) { 
-		targetX = mag*Math.cos(Math.toRadians(headingTheta));
-		targetY= mag*Math.sin(Math.toRadians(headingTheta));
+	//Pass in a polar vector and angle the robot will move in that direction and rotation
+	public void autoDrive(double mag, double headingTheta, double baseTheta)
+	{
+	/*	        /|
+		      /  |  H*sin(theta) = Y
+		    H    Y  H*cos(theta) = X
+		  /      |
+		/0___X___|   */
+		
+		targetX = mag * Math.cos( Math.toRadians(headingTheta) );
+		targetY = mag * Math.sin( Math.toRadians(headingTheta) );
 		calcWheelsFromRectCoords(targetX, targetY, baseTheta);
 	}
+	
 	public void PIDDrive()
 	{
-		if (Math.abs(correctionAngle)<1){
-			calcWheelsFromRectCoords(targetX,targetY,0);
-		} else {
-			calcWheelsFromRectCoords(targetX,targetY,correctionAngle); 
+		if (Math.abs(correctionAngle) < 1)
+		{
+			calcWheelsFromRectCoords(targetX, targetY, 0);
+		}
+		else {
+			calcWheelsFromRectCoords(targetX, targetY, correctionAngle); 
 		}
 	}
-	/* ---Drive the Robot in teleop. two joystick input ---*/
+	
+	//Drive the Robot in teleop. two joystick input
 	public void teleopDrive()
 	{
-		x = -OI.strafeJoystick.getX();
-		y = -OI.strafeJoystick.getY();
+		x      = -OI.strafeJoystick.getX();
+		y      = -OI.strafeJoystick.getY();
 		rotate = -OI.strafeJoystick.getZ();
 		
-			
-			
 		//cubic ramping
 		x = Math.pow(x, 3);
 		y = Math.pow(y, 3);
@@ -149,40 +164,34 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 		if (Math.abs(rotate) < joystickDeadband)
 			rotate = 0;
 
-		if (Math.abs(y)< joystickDeadband && Math.abs(x)< joystickDeadband && Math.abs(rotate) < joystickDeadband)
+		if (Math.abs(y) < joystickDeadband && Math.abs(x) < joystickDeadband && Math.abs(rotate) < joystickDeadband)
 		{
 			inDeadBand = true; 
-		} 
+		}
+		
 		else {
 			inDeadBand = false;
 			rotate = MathStuff.mapStickToAngle(rotate/20);
 		}
 		
-		if (fieldOriented){
-//			double gyro_degrees = gyro.getYaw(); 
-//			double gyro_radians = gyro_degrees * Math.PI/180; 
-//			double temp = y * Math.cos(gyro_radians) + x * Math.sin(gyro_radians);
-//			x = -y * Math.sin(gyro_radians) + x * Math.cos(gyro_radians);
-//			y = temp;
-			
+		if (fieldOriented)
+		{
 			double theta = - gyro.getYaw();
 			double[] vector = new double[2];
+			
 			vector[0] = x;
 			vector[1] = y;
+			
 			vector = MathStuff.rotateVector(vector, theta);
 			targetX = vector[0];
 			targetY = vector[1];
-			//angularTarget = gyro.getYaw();
-			//calcWheelsFromRectCoords(vector[0],vector[1],correctionAngle);
 			PIDDrive(); 
-		} else {
-			calcWheelsFromRectCoords(x,y,rotate);
 		}
-		//rotate = 0; 
-		//calculate angle/speed setpoints using 30x30 in. robot
-		
+		else {
+			calcWheelsFromRectCoords(x, y, rotate);
+		}
 	}
-	
+
 	public void zeroSpeeds()
 	{
 		targetX = 0;
@@ -190,7 +199,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 		x = 0;
 		y = 0;
 	}
-	
+
 	public void calcWheelsFromRectCoords(double x, double y, double rotate)
 	{
 		//calculate angle/speed setpoints using 30x30 in. robot
@@ -225,109 +234,85 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 		{
 			//Max is more than 1.0, so normalize.
 			pod0WheelSpeed /= max;
-			pod1WheelSpeed  /= max;
-			pod2WheelSpeed   /= max;
-			pod3WheelSpeed  /= max;
+			pod1WheelSpeed /= max;
+			pod2WheelSpeed /= max;
+			pod3WheelSpeed /= max;
 		}
 		pod0WheelSpeed *= RobotMap.DriveMap.maxSpeed;
 		pod1WheelSpeed *= RobotMap.DriveMap.maxSpeed;
 		pod2WheelSpeed *= RobotMap.DriveMap.maxSpeed;
 		pod3WheelSpeed *= RobotMap.DriveMap.maxSpeed;
-		
+
 		//find steering angles
-		// controls to keep wheels from turning when stick returns to zero 
-		if (!inDeadBand ){
-			double pod2SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
-			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
-			double pod0SteeringAngle = Math.toDegrees(Math.atan2(A, D)); //REAR LEFT 
-			double pod3SteeringAngle = Math.toDegrees(Math.atan2(A, C)); //REAR RIGHT
-//			SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", pod0SteeringAngle);
-//			SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", pod1SteeringAngle);
-//			SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", pod2SteeringAngle);
-//			SmartDashboard.putNumber("DriveTrain/Pod 3/Angle", pod3SteeringAngle);
-			pod0.setSteeringAngle (pod0SteeringAngle);
-			pod1.setSteeringAngle (pod1SteeringAngle);
-			pod2.setSteeringAngle (pod2SteeringAngle);
-			pod3.setSteeringAngle (pod3SteeringAngle);
-		}
-		else if (fieldOriented ){
-			double pod2SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
-			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
-			double pod0SteeringAngle = Math.toDegrees(Math.atan2(A, D)); //REAR LEFT 
-			double pod3SteeringAngle = Math.toDegrees(Math.atan2(A, C)); //REAR RIGHT
-//			SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", pod0SteeringAngle);
-//			SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", pod1SteeringAngle);
-//			SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", pod2SteeringAngle);
-//			SmartDashboard.putNumber("DriveTrain/Pod 3/Angle", pod3SteeringAngle);
-			pod0.setSteeringAngle (pod0SteeringAngle);
-			pod1.setSteeringAngle (pod1SteeringAngle);
-			pod2.setSteeringAngle (pod2SteeringAngle);
-			pod3.setSteeringAngle (pod3SteeringAngle);
-		}
-		else if(whileRotating)
+		//controls to keep wheels from turning when stick returns to zero
+		if (!inDeadBand || fieldOriented || whileRotating)
 		{
 			double pod2SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
 			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
 			double pod0SteeringAngle = Math.toDegrees(Math.atan2(A, D)); //REAR LEFT 
 			double pod3SteeringAngle = Math.toDegrees(Math.atan2(A, C)); //REAR RIGHT
-//			SmartDashboard.putNumber("DriveTrain/Pod 0/Angle", pod0SteeringAngle);
-//			SmartDashboard.putNumber("DriveTrain/Pod 1/Angle", pod1SteeringAngle);
-//			SmartDashboard.putNumber("DriveTrain/Pod 2/Angle", pod2SteeringAngle);
-//			SmartDashboard.putNumber("DriveTrain/Pod 3/Angle", pod3SteeringAngle);
 			pod0.setSteeringAngle (pod0SteeringAngle);
 			pod1.setSteeringAngle (pod1SteeringAngle);
 			pod2.setSteeringAngle (pod2SteeringAngle);
 			pod3.setSteeringAngle (pod3SteeringAngle);
 		}
 		
-//		SmartDashboard.putNumber("DriveTrain/Pod 0/Speed", pod0WheelSpeed);
-//		SmartDashboard.putNumber("DriveTrain/Pod 1/Speed", pod1WheelSpeed);
-//		SmartDashboard.putNumber("DriveTrain/Pod 2/Speed", pod0WheelSpeed);
-//		SmartDashboard.putNumber("DriveTrain/Pod 3/Speed", pod1WheelSpeed);
-		pod0.setWheelSpeed    (pod0WheelSpeed);
-		pod1.setWheelSpeed    (pod1WheelSpeed);
-		pod2.setWheelSpeed    (pod2WheelSpeed);
-		pod3.setWheelSpeed    (pod3WheelSpeed);
+		pod0.setWheelSpeed(pod0WheelSpeed);
+		pod1.setWheelSpeed(pod1WheelSpeed);
+		pod2.setWheelSpeed(pod2WheelSpeed);
+		pod3.setWheelSpeed(pod3WheelSpeed);
 	}
+	
 	public void testPodClosedLoop(int pod, double speed, double angle)
 	{
-		if (pod == 0){
+		if (pod == 0)
+		{
 			pod0.setSteeringAngle(angle);
 			pod0.setWheelSpeed(speed);
 		}
-		else if (pod == 1){
+		else if (pod == 1)
+		{
 			pod1.setSteeringAngle(angle);
 			pod1.setWheelSpeed(speed);
 		}
-		else if (pod == 2){
+		else if (pod == 2)
+		{
 			pod2.setSteeringAngle(angle);
 			pod2.setWheelSpeed(speed);
 		}
-		else if (pod == 3){
+		else if (pod == 3)
+		{
 			pod3.setSteeringAngle(angle);
 			pod3.setWheelSpeed(speed);
 		}
 	}
+	
 	public void testPodPercentVBus(int pod, double speed, double angle)
 	{
-		if (pod == 0){
+		if (pod == 0)
+		{
 			pod0.setPercentVBusSteer(angle);
 			pod0.setPercentVBusDrive(speed);
 		}
-		else if (pod == 1){
+		else if (pod == 1)
+		{
 			pod1.setPercentVBusSteer(angle);
 			pod1.setPercentVBusDrive(speed);
 		}
-		else if (pod == 2){
+		else if (pod == 2)
+		{
 			pod2.setPercentVBusSteer(angle);
 			pod2.setPercentVBusDrive(speed);
 		}
-		else if (pod == 3){
+		else if (pod == 3)
+		{
 			pod3.setPercentVBusSteer(angle);
 			pod3.setPercentVBusDrive(speed);
 		}
 	}
-	public void post(){
+	
+	public void post()
+	{
 		pod3.post();
 		pod0.post();
 		pod2.post();
@@ -345,15 +330,21 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 		SmartDashboard.putBoolean("Digital Input", digitalIn.get());
 		SmartDashboard.putNumber("Analog Input", analogIn.getVoltage());
 	}
-    public void initDefaultCommand() {
+	
+    public void initDefaultCommand()
+    {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
     }
+    
 	@Override
-	public void pidWrite(double output) {
+	public void pidWrite(double output)
+	{
 		correctionAngle = -output; 
 	}
-	public void zeroGyro(){
+	
+	public void zeroGyro()
+	{
 		gyro.zeroYaw();
 	}
 	public double getAnalog() {
