@@ -1,6 +1,7 @@
 package org.usfirst.frc.team237.robot;
 
-import org.usfirst.frc.team237.robot.commands.DriveForTimeAtSpeed;
+import org.usfirst.frc.team237.robot.commands.ReadyShooter;
+import org.usfirst.frc.team237.robot.commands.StopShooter;
 import org.usfirst.frc.team237.robot.commands.ToggleDriveOrientation;
 import org.usfirst.frc.team237.robot.commands.ZeroGyro;
 
@@ -16,15 +17,18 @@ public class OI {
 	
 	public static Joystick strafeJoystick = new Joystick(1);
 	public static Joystick rotateJoystick = new Joystick(0);
+	public static Joystick controls = new Joystick(2);
 	
 	public static Button toggleFOD = new JoystickButton(strafeJoystick, 1);
 	public static Button zeroGyro = new JoystickButton(rotateJoystick, 1);
+	public static Button readyShooter = new JoystickButton(controls, 1);
 	
 	public OI()
 	{
 		toggleFOD.whenPressed(new ToggleDriveOrientation());
 		zeroGyro.whenPressed(new ZeroGyro());
-		//toggleFOD.whenPressed(new DriveForTimeAtSpeed(2, 0.4, 180, 0));
+		readyShooter.whenPressed(new ReadyShooter());
+		readyShooter.whenReleased(new StopShooter());
 	}
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
