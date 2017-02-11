@@ -8,6 +8,7 @@ import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -92,6 +93,13 @@ public class ShooterSubsystem extends Subsystem {
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
+    }
+    
+    public void post()
+    {
+    	SmartDashboard.putNumber("Shooter/Shooter Speed", shooterSpeed());
+    	SmartDashboard.putNumber("Shooter/Target Speed", targetSpeed);
+    	SmartDashboard.putBoolean("Shooter/Up to speed", upToSpeed(10));
     }
 }
 

@@ -112,7 +112,9 @@ public class Robot extends IterativeRobot {
 		double angle, speed;
 		angle = OI.rotateJoystick.getRawAxis(1);
 		driveTrain.teleopDrive();
+		
 		driveTrain.post();
+		shooterSubsystem.post();
 	}
 
 	/**

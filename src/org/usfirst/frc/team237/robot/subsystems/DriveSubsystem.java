@@ -40,7 +40,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		pod3 = new PodSubsystem(RobotMap.DriveMap.pod3, RobotMap.DriveMap.pod3Steering, 3, RobotMap.DriveMap.pod3Offset); //RearRight  3_____0
 	
 		//Instantiate gyro for field oriented drive
-		gyro = new AHRS(SerialPort.Port.kMXP);
+		gyro = new AHRS(SerialPort.Port.kUSB);
 		gyro.reset();
 		
 		//instantiate PID for field oriented drive (F.O.D.)
