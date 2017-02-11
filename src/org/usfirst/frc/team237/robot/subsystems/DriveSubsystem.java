@@ -6,6 +6,8 @@ import org.usfirst.frc.team237.robot.RobotMap;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -30,7 +32,9 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	private boolean inDeadBand = true;
 	private boolean whileRotating = false;
 	private double joystickDeadband = 0.05;
-	private PIDController angularPID; 
+	private PIDController angularPID;
+	private DigitalInput digitalIn;
+	private AnalogInput analogIn;
 	public DriveSubsystem()
 	{
 		pod0 = new Pod(RobotMap.DriveMap.pod0, RobotMap.DriveMap.pod0Steering, 0, RobotMap.DriveMap.pod0Offset); //FrontRight 2_____1
@@ -48,6 +52,9 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 		angularPID.setOutputRange(-180, 180);
 		angularPID.setPercentTolerance(20);
 		angularPID.setContinuous();
+		// instantiate the analog and digital inputs 
+		digitalIn = new DigitalInput(0);
+		analogIn = new AnalogInput(0);
 	}
 	/* ---Enable F.O.D.--- */ 
 	public void enableFOD()
@@ -335,7 +342,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 		SmartDashboard.putNumber("DriveTrain/Gyro yaw:", gyro.getYaw());
 		SmartDashboard.putNumber("DriveTrain/Angular target:", angularTarget);
 		SmartDashboard.putNumber("DriveTrain/Correction Angle:", correctionAngle);
-		
+		SmartDashboard.putBoolean("Digital Input", digitalIn.get());
+		SmartDashboard.putNumber("Analog Input", analogIn.getVoltage());
 	}
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
@@ -348,6 +356,12 @@ public class DriveSubsystem extends Subsystem implements PIDOutput  {
 	public void zeroGyro(){
 		gyro.zeroYaw();
 	}
-
+	public double getAnalog() {
+		return analogIn.getAverageVoltage(); 
+	}
+	public boolean getDigital()
+	{
+		return digitalIn.get();
+	}
 }
 

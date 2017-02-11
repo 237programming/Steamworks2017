@@ -89,8 +89,6 @@ public class Pod extends Subsystem {
 		targetSpeed = 0;
 		drive.changeControlMode(TalonControlMode.PercentVbus);
 		drive.set(0);
-		
-	
 	}
 	public void enableClosedLoopSpeed(){
 		drive.setVoltageRampRate(0);
