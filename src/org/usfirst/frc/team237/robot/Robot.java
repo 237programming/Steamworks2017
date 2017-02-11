@@ -1,12 +1,8 @@
 package org.usfirst.frc.team237.robot;
 
 import org.usfirst.frc.team237.robot.commands.autonomous.RedRightGear;
-import org.usfirst.frc.team237.robot.subsystems.DriveSubsystem;
-import org.usfirst.frc.team237.robot.subsystems.IntakeSubsystem;
-import org.usfirst.frc.team237.robot.subsystems.ShooterSubsystem;
+import org.usfirst.frc.team237.robot.subsystems.*;
 
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -17,13 +13,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 
 	public static OI oi;
-	public static DriveSubsystem driveTrain = new DriveSubsystem();
+	public static DriveSubsystem driveTrain         = new DriveSubsystem();
 	public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-	public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+	public static IntakeSubsystem intakeSubsystem   = new IntakeSubsystem();
+	public static RopeSubsystem ropeSubsystem       = new RopeSubsystem();
 	
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
-	//comment so i can commit 
+
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.

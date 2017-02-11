@@ -1,6 +1,15 @@
 package org.usfirst.frc.team237.robot;
 
-import org.usfirst.frc.team237.robot.commands.*;
+import org.usfirst.frc.team237.robot.commands.IntakeCommand;
+import org.usfirst.frc.team237.robot.commands.IntakeOffCommand;
+import org.usfirst.frc.team237.robot.commands.OuttakeCommand;
+import org.usfirst.frc.team237.robot.commands.PullRopeCommand;
+import org.usfirst.frc.team237.robot.commands.ReadyShooter;
+import org.usfirst.frc.team237.robot.commands.StopRopeCommand;
+import org.usfirst.frc.team237.robot.commands.StopShooter;
+import org.usfirst.frc.team237.robot.commands.ToggleDriveOrientation;
+import org.usfirst.frc.team237.robot.commands.ZeroGyro;
+import org.usfirst.frc.team237.robot.subsystems.RopeSubsystem.Speed;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -14,24 +23,35 @@ public class OI {
 	
 	public static Joystick strafeJoystick = new Joystick(1);
 	public static Joystick rotateJoystick = new Joystick(0);
-	public static Joystick controls = new Joystick(2);
+	public static Joystick controls       = new Joystick(2);
 	
-	public static Button toggleFOD = new JoystickButton(strafeJoystick, 1);
-	public static Button zeroGyro = new JoystickButton(rotateJoystick, 1);
-	public static Button readyShooter = new JoystickButton(controls, 1);
-	public static Button intakeButton = new JoystickButton(controls, 2);
-	public static Button outtakeButton = new JoystickButton(controls, 3);
+	public static Button toggleFOD          = new JoystickButton(strafeJoystick, 1);
+	public static Button zeroGyro           = new JoystickButton(rotateJoystick, 1);
+	public static Button readyShooter       = new JoystickButton(controls, 1);
+	public static Button intakeButton       = new JoystickButton(controls, 2);
+	public static Button outtakeButton      = new JoystickButton(controls, 3);
+	public static Button pullRopeFastButton = new JoystickButton(controls, 4);
+	public static Button pullRopeSlowButton = new JoystickButton(controls, 5);
 	
 	public OI()
 	{
-		toggleFOD.whenPressed(new ToggleDriveOrientation());
-		zeroGyro.whenPressed(new ZeroGyro());
-		readyShooter.whenPressed(new ReadyShooter());
-		readyShooter.whenReleased(new StopShooter());
-		intakeButton.whenPressed(new IntakeCommand());
-		intakeButton.whenReleased(new IntakeOffCommand());
-		outtakeButton.whenPressed(new OuttakeCommand());
-		outtakeButton.whenReleased(new IntakeOffCommand());
+		toggleFOD          .whenPressed  (new ToggleDriveOrientation());
+		zeroGyro           .whenPressed  (new ZeroGyro());
+		
+		readyShooter       .whenPressed  (new ReadyShooter());
+		readyShooter       .whenReleased (new StopShooter());
+		
+		intakeButton       .whenPressed  (new IntakeCommand());
+		intakeButton       .whenReleased (new IntakeOffCommand());
+		
+		outtakeButton      .whenPressed  (new OuttakeCommand());
+		outtakeButton      .whenReleased (new IntakeOffCommand());
+		
+		pullRopeFastButton .whenPressed  (new PullRopeCommand(Speed.Fast));
+		pullRopeFastButton .whenReleased (new StopRopeCommand());
+		
+		pullRopeSlowButton .whenPressed  (new PullRopeCommand(Speed.Slow));
+		pullRopeSlowButton .whenReleased (new StopRopeCommand());
 	}
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
