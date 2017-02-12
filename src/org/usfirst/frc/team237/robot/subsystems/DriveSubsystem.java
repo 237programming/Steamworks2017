@@ -203,7 +203,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	public void calcWheelsFromRectCoords(double x, double y, double rotate)
 	{
 		//calculate angle/speed setpoints using 30x30 in. robot
-		double L = 30, W = 30;
+		double L = 23.5, W = 28.5;
 		double R = Math.sqrt((L * L) * (W * W));
 		double A = x - rotate * (L / R);
 		double B = x + rotate * (L / R);
