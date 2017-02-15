@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,6 +20,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	private AHRS          gyro;
 	private PodSubsystem           pod0, pod1, pod2, pod3;
 	private PIDController angularPID;
+	Relay light = new Relay(1);
 	
 	private double   x, y, rotate;
 	private double   targetX = 0, targetY  = 0;
@@ -53,6 +55,23 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		// instantiate the analog and digital inputs 
 		digitalIn = new DigitalInput(0);
 		analogIn = new AnalogInput(0);
+	}
+	
+	public void lightOn()
+	{
+		if(light.get() != Relay.Value.kForward) light.set(Relay.Value.kForward);
+	}
+	
+	public void lightOff()
+	{
+		if(light.get() != Relay.Value.kOff) light.set(Relay.Value.kOff);
+	}
+	
+	public void toggleLight()
+	{
+		if(light.get() == Relay.Value.kForward) lightOff();
+		else if(light.get() == Relay.Value.kOff) lightOn();
+		else lightOff();
 	}
 	
 	//Enable F.O.D.
