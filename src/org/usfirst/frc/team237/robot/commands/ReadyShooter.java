@@ -15,7 +15,7 @@ public class ReadyShooter extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	Robot.shooterSubsystem.lightOn();
-    	Robot.shooterSubsystem.setShooter(7000);
+    	Robot.shooterSubsystem.setShooter(22000);
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -24,7 +24,7 @@ public class ReadyShooter extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	return Robot.shooterSubsystem.upToSpeed(10);
+    	return Robot.shooterSubsystem.upToSpeed(100);
     }
 
     // Called once after isFinished returns true
