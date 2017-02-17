@@ -1,7 +1,5 @@
 package org.usfirst.frc.team237.robot;
 
-import org.usfirst.frc.team237.robot.subsystems.PodSubsystem;
-
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking
@@ -13,10 +11,10 @@ public class RobotMap {
 	public class DriveMap
 	{
 		//Offsets rotation on pods
-		public static final int pod0Offset = 1017-512; //FrontRight 1_____0
-		public static final int pod1Offset = 640-512;  //FrontLeft  |  ^  |
-		public static final int pod2Offset = 1015-512; //RearLeft   |  |  |
-		public static final int pod3Offset = 583-512;  //RearRight  2_____3
+		public static final int pod0Offset = 700-512;  //FrontRight 1_____0
+		public static final int pod1Offset = 945-512;  //FrontLeft  |  ^  |
+		public static final int pod2Offset = 548-512;  //RearLeft   |  |  |
+		public static final int pod3Offset = 544-512;  //RearRight  2_____3
 		
 		//CAN Addresses for pod drive motors
 		public static final int pod0 = 1;
