@@ -1,6 +1,20 @@
 package org.usfirst.frc.team237.robot;
 
-import org.usfirst.frc.team237.robot.commands.*;
+import org.usfirst.frc.team237.robot.commands.DriveForTimeAtSpeed;
+import org.usfirst.frc.team237.robot.commands.IntakeCommand;
+import org.usfirst.frc.team237.robot.commands.IntakeOffCommand;
+import org.usfirst.frc.team237.robot.commands.OuttakeCommand;
+import org.usfirst.frc.team237.robot.commands.PullRopeCommand;
+import org.usfirst.frc.team237.robot.commands.ReadyShooter;
+import org.usfirst.frc.team237.robot.commands.RotateTo;
+import org.usfirst.frc.team237.robot.commands.StartFeeder;
+import org.usfirst.frc.team237.robot.commands.StopFeeder;
+import org.usfirst.frc.team237.robot.commands.StopRopeCommand;
+import org.usfirst.frc.team237.robot.commands.StopShooter;
+import org.usfirst.frc.team237.robot.commands.ToggleDriveOrientation;
+import org.usfirst.frc.team237.robot.commands.ToggleGearLightCommand;
+import org.usfirst.frc.team237.robot.commands.ZeroGyro;
+import org.usfirst.frc.team237.robot.commands.autonomous.AlignToGear;
 import org.usfirst.frc.team237.robot.subsystems.RopeSubsystem.Speed;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -18,7 +32,11 @@ public class OI {
 	public static Joystick controls       = new Joystick(2);
 	
 	public static Button toggleFOD          = new JoystickButton(strafeJoystick, 1);
-	public static Button zeroGyro           = new JoystickButton(rotateJoystick, 1);
+	public static Button toggleGearLight    = new JoystickButton(rotateJoystick, 1);
+	public static Button leftPeg            = new JoystickButton(strafeJoystick, 4);
+	public static Button middlePeg          = new JoystickButton(strafeJoystick, 3);
+	public static Button rightPeg           = new JoystickButton(strafeJoystick, 5);
+	public static Button zeroGyroButton     = new JoystickButton(strafeJoystick, 8);
 	public static Button readyShooter       = new JoystickButton(controls, 1);
 	public static Button outtakeButton      = new JoystickButton(controls, 2);
 	public static Button intakeButton       = new JoystickButton(controls, 3);
@@ -29,8 +47,16 @@ public class OI {
 	
 	public OI()
 	{
+		leftPeg            .whenPressed  (new RotateTo(60));
+		middlePeg          .whenPressed  (new RotateTo(0));
+		rightPeg           .whenPressed  (new RotateTo(-60));
+		
 		toggleFOD          .whenPressed  (new ToggleDriveOrientation());
-		zeroGyro           .whenPressed  (new ToggleGearLightCommand());
+		toggleGearLight    .whenPressed  (new ToggleGearLightCommand());
+		zeroGyroButton     .whenPressed  (new ZeroGyro());
+		
+		autoHangGear       .whenPressed  (new AlignToGear());
+//		autoHangGear       .whenReleased (new DriveForTimeAtSpeed(0, 0, 0, 0));
 		
 		readyShooter       .whenPressed  (new ReadyShooter());
 		readyShooter       .whenReleased (new StopShooter());

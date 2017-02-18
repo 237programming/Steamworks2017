@@ -36,10 +36,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	private AnalogInput analogIn;
 	public DriveSubsystem()
 	{
-		pod0 = new PodSubsystem(RobotMap.DriveMap.pod0, RobotMap.DriveMap.pod0Steering, 0, (int) MathStuff.map(RobotMap.DriveMap.pod0Offset, 10, 890, 0, 1023)); //FrontRight 2_____1
-		pod1 = new PodSubsystem(RobotMap.DriveMap.pod1, RobotMap.DriveMap.pod1Steering, 1, (int) MathStuff.map(RobotMap.DriveMap.pod1Offset, 10, 890, 0, 1023)); //FrontLeft  |  ^  |
-		pod2 = new PodSubsystem(RobotMap.DriveMap.pod2, RobotMap.DriveMap.pod2Steering, 2, (int) MathStuff.map(RobotMap.DriveMap.pod2Offset, 10, 890, 0, 1023)); //RearLeft   |  |  |
-		pod3 = new PodSubsystem(RobotMap.DriveMap.pod3, RobotMap.DriveMap.pod3Steering, 3, (int) MathStuff.map(RobotMap.DriveMap.pod3Offset, 10, 890, 0, 1023)); //RearRight  3_____0
+		pod0 = new PodSubsystem(RobotMap.DriveMap.pod0, RobotMap.DriveMap.pod0Steering, 0, RobotMap.DriveMap.pod0Offset); //FrontRight 2_____1
+		pod1 = new PodSubsystem(RobotMap.DriveMap.pod1, RobotMap.DriveMap.pod1Steering, 1, RobotMap.DriveMap.pod1Offset); //FrontLeft  |  ^  |
+		pod2 = new PodSubsystem(RobotMap.DriveMap.pod2, RobotMap.DriveMap.pod2Steering, 2, RobotMap.DriveMap.pod2Offset); //RearLeft   |  |  |
+		pod3 = new PodSubsystem(RobotMap.DriveMap.pod3, RobotMap.DriveMap.pod3Steering, 3, RobotMap.DriveMap.pod3Offset); //RearRight  3_____0
 	
 		//Instantiate gyro for field oriented drive
 		gyro = new AHRS(SerialPort.Port.kUSB);
@@ -168,7 +168,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	{
 		x      = -OI.strafeJoystick.getX();
 		y      = -OI.strafeJoystick.getY();
-		rotate = -OI.rotateJoystick.getX();
+		if(!whileRotating)
+			rotate = -OI.rotateJoystick.getX();
 		
 		//cubic ramping
 		x = Math.pow(x, 3);
@@ -236,7 +237,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		double pod2WheelSpeed = Math.sqrt((A * A) + (C * C));  // 3 REAR RIGHT
 
 		//normalize wheel speeds
-		double max = pod0WheelSpeed;
+		double max = pod3WheelSpeed;
 		if(pod1WheelSpeed > max)
 		{
 			max = pod1WheelSpeed;
@@ -245,9 +246,9 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		{
 			max = pod2WheelSpeed;
 		}
-		if(pod3WheelSpeed > max)
+		if(pod0WheelSpeed > max)
 		{
-			max = pod3WheelSpeed;
+			max = pod0WheelSpeed;
 		}
 		if(max > 1)
 		{
@@ -277,7 +278,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		}
 		
 		pod0.setWheelSpeed(pod0WheelSpeed);
-		pod1.setWheelSpeed(pod1WheelSpeed);
+		pod1.setWheelSpeed(pod1WheelSpeed);	
 		pod2.setWheelSpeed(pod2WheelSpeed);
 		pod3.setWheelSpeed(pod3WheelSpeed);
 	}
@@ -347,7 +348,9 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		SmartDashboard.putNumber("DriveTrain/Angular target:", angularTarget);
 		SmartDashboard.putNumber("DriveTrain/Correction Angle:", correctionAngle);
 		SmartDashboard.putBoolean("Digital Input", digitalIn.get());
-		SmartDashboard.putNumber("Analog Input", analogIn.getVoltage());
+		SmartDashboard.putNumber("Analog Input", analogIn.getAverageVoltage());
+		SmartDashboard.putNumber("DriveTrain/TargetX", targetX);
+		SmartDashboard.putNumber("DriveTrain/TargetY", targetY);
 	}
 	
     public void initDefaultCommand()

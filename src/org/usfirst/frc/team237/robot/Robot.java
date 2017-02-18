@@ -3,6 +3,7 @@ package org.usfirst.frc.team237.robot;
 import org.usfirst.frc.team237.robot.commands.autonomous.RedRightGear;
 import org.usfirst.frc.team237.robot.subsystems.*;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -46,7 +47,7 @@ public class Robot extends IterativeRobot {
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
 		driveTrain.post();
-		
+		shooterSubsystem.post();
 	}
 
 	/**

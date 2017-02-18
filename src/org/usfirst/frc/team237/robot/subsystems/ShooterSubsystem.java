@@ -31,13 +31,21 @@ public class ShooterSubsystem extends Subsystem {
 		shooterTalon.configNominalOutputVoltage(+0.0, -0.0);
 		shooterTalon.configPeakOutputVoltage(0, -12.0);
 		shooterTalon.setProfile(0);
-		shooterTalon.setP(0.2);
+		shooterTalon.setP(0.4);
+//		shooterTalon.setP(0.2);
 		shooterTalon.setI(0.002);
+//		shooterTalon.setI(0.1);
 		shooterTalon.setD(1);
-		shooterTalon.setF(0.0);
+		shooterTalon.setF(0.0441);
 		shooterTalon.reverseOutput(true);
 		shooterTalon.reverseSensor(true);
 		feederTalon.changeControlMode(TalonControlMode.PercentVbus);
+		//23,200
+	}
+	
+	public void clearIAccum()
+	{
+		shooterTalon.clearIAccum();
 	}
 	
 	public void lightOn()
@@ -85,7 +93,7 @@ public class ShooterSubsystem extends Subsystem {
 	
 	public boolean upToSpeed(double error)
 	{
-		return shooterSpeed() < targetSpeed + error && shooterSpeed() > targetSpeed - error;
+		return (shooterSpeed() < targetSpeed + error && shooterSpeed() > targetSpeed - error) && targetSpeed != 0;
 	}
 	
     // Put methods for controlling this subsystem
@@ -100,7 +108,8 @@ public class ShooterSubsystem extends Subsystem {
     {
     	SmartDashboard.putNumber("Shooter/Shooter Speed", shooterSpeed());
     	SmartDashboard.putNumber("Shooter/Target Speed", targetSpeed);
-    	SmartDashboard.putBoolean("Shooter/Up to speed", upToSpeed(10));
+    	SmartDashboard.putNumber("Shooter/Shooter error", shooterTalon.getError());
+    	SmartDashboard.putBoolean("Shooter/Up to speed", upToSpeed(500));
     }
 }
 
