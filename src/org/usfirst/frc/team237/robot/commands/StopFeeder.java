@@ -11,6 +11,7 @@ public class StopFeeder extends Command {
 
     public StopFeeder() {
     	requires (Robot.shooterSubsystem);
+    	requires (Robot.intakeSubsystem);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
@@ -18,6 +19,7 @@ public class StopFeeder extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	Robot.shooterSubsystem.feederOff();
+    	Robot.intakeSubsystem.intakeOff();
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -37,6 +39,7 @@ public class StopFeeder extends Command {
     // subsystems is scheduled to run
     protected void interrupted() {
     	Robot.shooterSubsystem.feederOff();
+    	Robot.intakeSubsystem.intakeOff();
     }
     
 }

@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class DriveSubsystem extends Subsystem implements PIDOutput {
 	
 	private AHRS          gyro;
-	private PodSubsystem           pod0, pod1, pod2, pod3;
+	private PodSubsystem  pod0, pod1, pod2, pod3;
 	private PIDController angularPID;
 	Relay light = new Relay(1);
 	
@@ -36,10 +36,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	private AnalogInput analogIn;
 	public DriveSubsystem()
 	{
-		pod0 = new PodSubsystem(RobotMap.DriveMap.pod0, RobotMap.DriveMap.pod0Steering, 0, RobotMap.DriveMap.pod0Offset); //FrontRight 2_____1
-		pod1 = new PodSubsystem(RobotMap.DriveMap.pod1, RobotMap.DriveMap.pod1Steering, 1, RobotMap.DriveMap.pod1Offset); //FrontLeft  |  ^  |
-		pod2 = new PodSubsystem(RobotMap.DriveMap.pod2, RobotMap.DriveMap.pod2Steering, 2, RobotMap.DriveMap.pod2Offset); //RearLeft   |  |  |
-		pod3 = new PodSubsystem(RobotMap.DriveMap.pod3, RobotMap.DriveMap.pod3Steering, 3, RobotMap.DriveMap.pod3Offset); //RearRight  3_____0
+		pod0 = new PodSubsystem(RobotMap.DriveMap.pod0, RobotMap.DriveMap.pod0Steering, 0, (int) MathStuff.map(RobotMap.DriveMap.pod0Offset, 10, 890, 0, 1023)); //FrontRight 2_____1
+		pod1 = new PodSubsystem(RobotMap.DriveMap.pod1, RobotMap.DriveMap.pod1Steering, 1, (int) MathStuff.map(RobotMap.DriveMap.pod1Offset, 10, 890, 0, 1023)); //FrontLeft  |  ^  |
+		pod2 = new PodSubsystem(RobotMap.DriveMap.pod2, RobotMap.DriveMap.pod2Steering, 2, (int) MathStuff.map(RobotMap.DriveMap.pod2Offset, 10, 890, 0, 1023)); //RearLeft   |  |  |
+		pod3 = new PodSubsystem(RobotMap.DriveMap.pod3, RobotMap.DriveMap.pod3Steering, 3, (int) MathStuff.map(RobotMap.DriveMap.pod3Offset, 10, 890, 0, 1023)); //RearRight  3_____0
 	
 		//Instantiate gyro for field oriented drive
 		gyro = new AHRS(SerialPort.Port.kUSB);
@@ -168,7 +168,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	{
 		x      = -OI.strafeJoystick.getX();
 		y      = -OI.strafeJoystick.getY();
-		rotate = -OI.strafeJoystick.getZ();
+		rotate = -OI.rotateJoystick.getX();
 		
 		//cubic ramping
 		x = Math.pow(x, 3);
@@ -230,10 +230,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		double D = y + rotate * (W / R);
 		
 		//find wheel speeds		
-		double pod2WheelSpeed = Math.sqrt((B * B) + (C * C));  // FRONT RIGHT
-		double pod1WheelSpeed = Math.sqrt((B * B) + (D * D));  // FRONT LEFT
-		double pod0WheelSpeed = Math.sqrt((A * A) + (D * D));  // REAR LEFT
-		double pod3WheelSpeed = Math.sqrt((A * A) + (C * C));  // REAR RIGHT
+		double pod1WheelSpeed = Math.sqrt((B * B) + (C * C));  // 2 FRONT RIGHT
+		double pod0WheelSpeed = Math.sqrt((B * B) + (D * D));  // 1 FRONT LEFT
+		double pod3WheelSpeed = Math.sqrt((A * A) + (D * D));  // 0 REAR LEFT
+		double pod2WheelSpeed = Math.sqrt((A * A) + (C * C));  // 3 REAR RIGHT
 
 		//normalize wheel speeds
 		double max = pod0WheelSpeed;
@@ -266,10 +266,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		//controls to keep wheels from turning when stick returns to zero
 		if (!inDeadBand || fieldOriented || whileRotating)
 		{
-			double pod2SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
-			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
-			double pod0SteeringAngle = Math.toDegrees(Math.atan2(A, D)); //REAR LEFT 
-			double pod3SteeringAngle = Math.toDegrees(Math.atan2(A, C)); //REAR RIGHT
+			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
+			double pod0SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
+			double pod3SteeringAngle = Math.toDegrees(Math.atan2(A, D)); //REAR LEFT 
+			double pod2SteeringAngle = Math.toDegrees(Math.atan2(A, C)); //REAR RIGHT
 			pod0.setSteeringAngle (pod0SteeringAngle);
 			pod1.setSteeringAngle (pod1SteeringAngle);
 			pod2.setSteeringAngle (pod2SteeringAngle);

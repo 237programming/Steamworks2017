@@ -7,19 +7,17 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class StartFeeder extends Command {
+public class ToggleGearLightCommand extends Command {
 
-    public StartFeeder() {
-    	requires (Robot.shooterSubsystem);
-    	requires (Robot.intakeSubsystem);
+    public ToggleGearLightCommand() {
+    	requires(Robot.driveTrain);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.shooterSubsystem.feederIn();
-    	Robot.intakeSubsystem.intakeIn(0.5);
+    	Robot.driveTrain.toggleLight();
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -38,6 +36,5 @@ public class StartFeeder extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	Robot.shooterSubsystem.feederOff();
     }
 }

@@ -30,7 +30,7 @@ public class OI {
 	public OI()
 	{
 		toggleFOD          .whenPressed  (new ToggleDriveOrientation());
-		zeroGyro           .whenPressed  (new ZeroGyro());
+		zeroGyro           .whenPressed  (new ToggleGearLightCommand());
 		
 		readyShooter       .whenPressed  (new ReadyShooter());
 		readyShooter       .whenReleased (new StopShooter());

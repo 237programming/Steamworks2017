@@ -5,36 +5,50 @@ public final class MathStuff {
 	//Convert encoder counts (0 to 1023) to degrees (0 to 359);
 	public static double encoderToDegrees(double encoderCount)
 	{
-		return (encoderCount/1023f * 359f);
+//		return (encoderCount/1023f * 359f);
+		return map(map(encoderCount, 10, 890, 0, 1023), 0, 1023, 0, 359);
 	}
 	
 	//Convert degrees (0 to 359) to encoder counts (0 to 1023);
 	public static int degreeToEncoder(double degree)
 	{
-		double res = (degree/359 * 1023);
+//		double res = (degree/359 * 1023f);
+		double res =  map(degree, 0, 359, 0, 1023);
 		return (int) Math.round(res);
 	}
 	
 	//Convert degrees (-180 to 180) to encoder counts (-512 to 512)
 	public static double mapAngleToEnc(double angle)
 	{
-		if (angle>=0){
-			return (angle - 0)*(1023-512)/(180 - 0) + 512;
-		} 
-		else {
-			return (angle - -180)*(511 - 0)/(-1 - -180) + 0;
-		}
+//		if (angle>=0) {
+//			return (angle - 0)*(1023-512)/(180 - 0) + 512;
+//		} 
+//		else {
+//			return (angle - -180)*(511 - min)/(-1 - -180) + 0;
+//		}
 		
+		if(angle >= 0) {
+			double angleToEnc = map(angle, 0, 180, 440, 890);
+			return map(angleToEnc, 440, 890, 512, 1023);
+		}
+		else {
+			double angleToEnc = map(angle, -180, 0, 10, 440);
+			return map(angleToEnc, 10, 440, 0, 511);
+		}
 	}
 	
 	//Convert encoder counts (-512 to 512) to degrees (-180 to 180);
 	public static double mapEncToAngle(double enc)
 	{
-		if (enc >= 512){
-			return (enc - 512)*(180-0)/(1023 - 512) + 0;
+		if (enc >= 512) {
+			double encToAngle = map(enc, 512, 1023, 440, 890);
+			return map(encToAngle, 440, 890, 0, 180);
+//			return (enc - 512)*(180-0)/(1023 - 512) + 0;
 		} 
 		else {
-			return (enc - 0)*(0 - -180)/(511 - 0) + -180;
+			double encToAngle = map(enc, 0, 511, 10, 440);
+			return map(encToAngle, 10, 440, -180, 0);
+//			return (enc - 0)*(0 - -180)/(511 - 0) + -180;
 		}
 	}
 	
@@ -70,13 +84,18 @@ public final class MathStuff {
 	//Keeps given encoder count within range (0 to 1023)
 	public static double normalizeEncInput(double enc)
 	{
-		if (enc > 1023)
+		if (map(enc, 10, 890, 0, 1023) > 1023)
 		{
-			enc -= 1024; 
-		} else if (enc < 0) {
-			enc += 1024;
+			enc -= map(1024, 0, 1024, 10, 890); 
+		} else if (map(enc, 10, 890, 0, 1023) < 10) {
+			enc += map(1024, 0, 1024, 10, 890);
 		}
-		return enc; 
+		return map(enc, 0, 1024, 10, 890);
+	}
+	
+	public static double map(double val, double min0, double max0, double min1, double max1)
+	{
+		return (val - min0) * (max1 - min1) / (max0 - min0) + min0;
 	}
 	
 	//Rotates a vector by an angle (theta)

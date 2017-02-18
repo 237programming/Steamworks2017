@@ -29,12 +29,14 @@ public class ShooterSubsystem extends Subsystem {
 		shooterTalon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		shooterTalon.changeControlMode(TalonControlMode.Speed);
 		shooterTalon.configNominalOutputVoltage(+0.0, -0.0);
-		shooterTalon.configPeakOutputVoltage(+12.0, -12.0);
+		shooterTalon.configPeakOutputVoltage(0, -12.0);
 		shooterTalon.setProfile(0);
 		shooterTalon.setP(0.2);
-		shooterTalon.setI(0.0);
-		shooterTalon.setD(0.0);
+		shooterTalon.setI(0.002);
+		shooterTalon.setD(1);
 		shooterTalon.setF(0.0);
+		shooterTalon.reverseOutput(true);
+		shooterTalon.reverseSensor(true);
 		feederTalon.changeControlMode(TalonControlMode.PercentVbus);
 	}
 	
@@ -83,8 +85,7 @@ public class ShooterSubsystem extends Subsystem {
 	
 	public boolean upToSpeed(double error)
 	{
-		return shooterSpeed() < targetSpeed + error &&
-			   shooterSpeed() > targetSpeed - error;
+		return shooterSpeed() < targetSpeed + error && shooterSpeed() > targetSpeed - error;
 	}
 	
     // Put methods for controlling this subsystem

@@ -18,8 +18,8 @@ public class IntakeSubsystem extends Subsystem {
 	}
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
-	public void intakeIn() {
-		intakeTalon.set(1.0);
+	public void intakeIn(double speed) {
+		intakeTalon.set(speed);
 	}
 	
 	public void intakeOut() {
