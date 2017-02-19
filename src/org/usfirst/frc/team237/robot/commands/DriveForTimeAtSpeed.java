@@ -30,6 +30,7 @@ public class DriveForTimeAtSpeed extends Command {
 		time.start();
 		Robot.driveTrain.zeroSpeeds();
 		Robot.driveTrain.autoDriving = true;
+		Robot.driveTrain.enableFOD();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -50,6 +51,7 @@ public class DriveForTimeAtSpeed extends Command {
 		Robot.driveTrain.autoDrive(0, headingTheta, 0);
 		Robot.driveTrain.zeroSpeeds();
 		Robot.driveTrain.autoDriving = false;
+		Robot.driveTrain.disableFOD();
 	}
 
 	// Called when another command which requires one or more of the same
@@ -59,5 +61,6 @@ public class DriveForTimeAtSpeed extends Command {
 		Robot.driveTrain.autoDrive(0, headingTheta, 0);
 		Robot.driveTrain.zeroSpeeds();
 		Robot.driveTrain.autoDriving = false;
+		Robot.driveTrain.disableFOD();
 	}
 }

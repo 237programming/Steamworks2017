@@ -11,11 +11,14 @@ public class AlignToGear extends Command {
 	private double targetLocation; 
 	private boolean targetVisible;
 	private boolean onTarget;
+	private double min, max;
 	
-    public AlignToGear() {
+    public AlignToGear(double min, double max) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     	requires(Robot.driveTrain);
+    	this.min = min;
+    	this.max = max;
     }
 
     // Called just before this Command runs the first time
@@ -39,15 +42,15 @@ public class AlignToGear extends Command {
     	
     	if(targetVisible)
     	{
-			if (targetLocation < 1.85) {
+			if (targetLocation < min) {
 		//    		Robot.driveTrain.autoDrive(0.1, 45, 0);
 				headingTheta = 0;
-				Robot.driveTrain.autoDrive(.1, headingTheta, 0);
+				Robot.driveTrain.autoDrive(.08, headingTheta, 0);
 			}
-			else if ( targetLocation > 2.05) { 
+			else if ( targetLocation > max) { 
 		//    		Robot.driveTrain.autoDrive(0.1, -45, 0);
 				headingTheta = 180;
-				Robot.driveTrain.autoDrive(.1, headingTheta, 0);
+				Robot.driveTrain.autoDrive(.08, headingTheta, 0);
 			} 
 			else {
 				onTarget = true;

@@ -97,7 +97,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	//Check F.O.D.
 	public boolean fieldOriented()
 	{
-		return fieldOriented; 
+		return fieldOriented;
 	}
 	
 	//return Drive Train angular target for F.O.D.
@@ -129,6 +129,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		whileRotating = true;
 		correctionAngle = 0;
 		angularPID.disable();
+		
 		angularPID.setPID(RobotMap.PIDMap.ANG_P, RobotMap.PIDMap.ANG_I, RobotMap.PIDMap.ANG_D);
 		enableAngularControl();
 	}

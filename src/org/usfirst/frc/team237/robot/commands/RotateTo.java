@@ -32,7 +32,7 @@ public class RotateTo extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	return Math.abs(Robot.driveTrain.getYaw() - Robot.driveTrain.angularTarget()) <= 2;
+    	return Math.abs(Robot.driveTrain.getYaw() - Robot.driveTrain.angularTarget()) <= 3;
     }
 
     // Called once after isFinished returns true

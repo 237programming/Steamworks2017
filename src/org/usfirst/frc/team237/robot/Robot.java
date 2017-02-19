@@ -1,6 +1,6 @@
 package org.usfirst.frc.team237.robot;
 
-import org.usfirst.frc.team237.robot.commands.autonomous.CenterGearGroup;
+import org.usfirst.frc.team237.robot.commands.autonomous.BlueLeftGear;
 import org.usfirst.frc.team237.robot.subsystems.DriveSubsystem;
 import org.usfirst.frc.team237.robot.subsystems.IntakeSubsystem;
 import org.usfirst.frc.team237.robot.subsystems.RopeSubsystem;
@@ -50,6 +50,36 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 		driveTrain.post();
 		shooterSubsystem.post();
+		
+/*		String autoSelected = SmartDashboard.getString("SmartDashboard/AutoCommand");
+		autoSelected = autoSelected.toLowerCase();
+		switch(autoSelected)
+		{
+			case "Blue Left":
+				
+			break;
+				
+			case "Blue Center":
+				
+			break;
+				
+			case "Blue Right":
+				
+			break;
+				
+			case "Red Left":
+				
+			break;
+				
+			case "Red Center":
+				
+			break;
+				
+			case "Red Right":
+				
+			break;
+		}
+*/
 	}
 
 	/**
@@ -66,7 +96,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		driveTrain.lightOn();
-		autonomousCommand = new CenterGearGroup();
+		autonomousCommand = new BlueLeftGear();
 		
 		/*
 		String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
@@ -114,8 +144,6 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		
 		Scheduler.getInstance().run();
-		double angle, speed;
-		angle = OI.rotateJoystick.getRawAxis(1);
 		driveTrain.teleopDrive();
 		
 		driveTrain.post();

@@ -57,7 +57,7 @@ public class OI {
 		toggleGearLight    .whenPressed  (new ToggleGearLightCommand());
 		zeroGyroButton     .whenPressed  (new ZeroGyro());
 		
-		autoHangGear       .whenPressed  (new AlignToGear());
+		autoHangGear       .whenPressed  (new AlignToGear(1.9, 2));
 //		autoHangGear       .whenReleased (new DriveForTimeAtSpeed(0, 0, 0, 0));
 		
 		readyShooter       .whenPressed  (new ReadyShooter());
