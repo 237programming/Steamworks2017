@@ -29,6 +29,7 @@ public class DriveForTimeAtSpeed extends Command {
 		time = new Timer();
 		time.start();
 		Robot.driveTrain.zeroSpeeds();
+		Robot.driveTrain.autoDriving = true;
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -48,6 +49,7 @@ public class DriveForTimeAtSpeed extends Command {
 	protected void end() {
 		Robot.driveTrain.autoDrive(0, headingTheta, 0);
 		Robot.driveTrain.zeroSpeeds();
+		Robot.driveTrain.autoDriving = false;
 	}
 
 	// Called when another command which requires one or more of the same
@@ -56,5 +58,6 @@ public class DriveForTimeAtSpeed extends Command {
 	protected void interrupted() {
 		Robot.driveTrain.autoDrive(0, headingTheta, 0);
 		Robot.driveTrain.zeroSpeeds();
+		Robot.driveTrain.autoDriving = false;
 	}
 }

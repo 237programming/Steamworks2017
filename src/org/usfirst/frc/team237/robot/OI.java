@@ -36,6 +36,7 @@ public class OI {
 	public static Button leftPeg            = new JoystickButton(strafeJoystick, 4);
 	public static Button middlePeg          = new JoystickButton(strafeJoystick, 3);
 	public static Button rightPeg           = new JoystickButton(strafeJoystick, 5);
+	public static Button spin180            = new JoystickButton(strafeJoystick, 2);
 	public static Button zeroGyroButton     = new JoystickButton(strafeJoystick, 8);
 	public static Button readyShooter       = new JoystickButton(controls, 1);
 	public static Button outtakeButton      = new JoystickButton(controls, 2);
@@ -50,6 +51,7 @@ public class OI {
 		leftPeg            .whenPressed  (new RotateTo(60));
 		middlePeg          .whenPressed  (new RotateTo(0));
 		rightPeg           .whenPressed  (new RotateTo(-60));
+		spin180            .whenPressed  (new RotateTo(-180));
 		
 		toggleFOD          .whenPressed  (new ToggleDriveOrientation());
 		toggleGearLight    .whenPressed  (new ToggleGearLightCommand());

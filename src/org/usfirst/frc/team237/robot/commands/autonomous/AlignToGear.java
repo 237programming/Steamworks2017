@@ -7,9 +7,10 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class AlignToGear extends Command {
 	
-	private double targetLocation = 0; 
-	private boolean targetVisible = false; 
-	private boolean onTarget = false;
+	private double headingTheta;
+	private double targetLocation; 
+	private boolean targetVisible;
+	private boolean onTarget;
 	
     public AlignToGear() {
         // Use requires() here to declare subsystem dependencies
@@ -19,8 +20,15 @@ public class AlignToGear extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	Robot.driveTrain.enableFOD();
+    	headingTheta = 0;
+    	targetLocation = 0;
+    	targetVisible = false;
+    	onTarget = false;
     	targetLocation = Robot.driveTrain.getAnalog();
     	targetVisible = Robot.driveTrain.getDigital();
+		Robot.driveTrain.zeroSpeeds();
+		Robot.driveTrain.autoDriving = true;
     	if(!targetVisible) onTarget = true;
     }
 
@@ -29,35 +37,47 @@ public class AlignToGear extends Command {
     	targetLocation = Robot.driveTrain.getAnalog();
     	targetVisible = Robot.driveTrain.getDigital();
     	
-    	if (targetLocation < 2.05) {
-//    		Robot.driveTrain.autoDrive(0.1, 45, 0);
-    		Robot.driveTrain.calcWheelsFromRectCoords(-1, 0, 0);
-    	}
-    	else if ( targetLocation > 2.25) { 
-//    		Robot.driveTrain.autoDrive(0.1, -45, 0);
-    		Robot.driveTrain.calcWheelsFromRectCoords(1, 0, 0);
-    	} 
-    	else {
-    		onTarget = true;
+    	if(targetVisible)
+    	{
+			if (targetLocation < 1.85) {
+		//    		Robot.driveTrain.autoDrive(0.1, 45, 0);
+				headingTheta = 0;
+				Robot.driveTrain.autoDrive(.1, headingTheta, 0);
+			}
+			else if ( targetLocation > 2.05) { 
+		//    		Robot.driveTrain.autoDrive(0.1, -45, 0);
+				headingTheta = 180;
+				Robot.driveTrain.autoDrive(.1, headingTheta, 0);
+			} 
+			else {
+				onTarget = true;
+			}
+    	} else {
+    		targetVisible = false;
     	}
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return onTarget;
+        return onTarget || !targetVisible;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	System.out.println("2.05 < " + Robot.driveTrain.getAnalog() + " < 2.25");
-    	Robot.driveTrain.autoDrive(0, 0, 0);
+    	System.out.println("--OnTarget:      " + onTarget + "\n" + 
+    					   "--TargetVisible: " + targetVisible);
+    	Robot.driveTrain.autoDrive(0, headingTheta, 0);
+    	Robot.driveTrain.zeroSpeeds();
+    	Robot.driveTrain.autoDriving = false;
     	onTarget = false;
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	Robot.driveTrain.autoDrive(0, 0, 0);
     	onTarget = false;
+    	Robot.driveTrain.autoDrive(0, headingTheta, 0);
+    	Robot.driveTrain.zeroSpeeds();
+    	Robot.driveTrain.autoDriving = false;
     }
 }

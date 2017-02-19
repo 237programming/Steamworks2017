@@ -31,6 +31,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	private boolean  fieldOriented = false;
 	private boolean  whileRotating = false;
 	private boolean  inDeadBand    = true;
+	public  boolean  autoDriving   = false;
 
 	private DigitalInput digitalIn;
 	private AnalogInput analogIn;
@@ -90,6 +91,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		fieldOriented = false; 
 		angularTarget = 0;
 		angularPID.disable();
+		disableAngularControl();
 	}
 	
 	//Check F.O.D.
@@ -113,13 +115,18 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	//Enable Angular Correction in Drive train
 	public void enableAngularControl()
 	{
-		whileRotating = true;
 		angularPID.setSetpoint(angularTarget);
 		angularPID.enable();
 	}
 	
+	public void disableAngularControl()
+	{
+		whileRotating = false;
+	}
+	
 	public void enableRotateTo()
 	{
+		whileRotating = true;
 		correctionAngle = 0;
 		angularPID.disable();
 		angularPID.setPID(RobotMap.PIDMap.ANG_P, RobotMap.PIDMap.ANG_I, RobotMap.PIDMap.ANG_D);
@@ -168,8 +175,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	{
 		x      = -OI.strafeJoystick.getX();
 		y      = -OI.strafeJoystick.getY();
-		if(!whileRotating)
-			rotate = -OI.rotateJoystick.getX();
+		rotate = -OI.rotateJoystick.getX();
 		
 		//cubic ramping
 		x = Math.pow(x, 3);
@@ -205,7 +211,11 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 			vector = MathStuff.rotateVector(vector, theta);
 			targetX = vector[0];
 			targetY = vector[1];
-			PIDDrive(); 
+			
+			if(!(whileRotating || autoDriving))
+			{
+				PIDDrive();
+			}
 		}
 		else {
 			calcWheelsFromRectCoords(x, y, rotate);
@@ -218,6 +228,13 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		targetY = 0;
 		x = 0;
 		y = 0;
+	}
+	
+	public void autoDriveRectCoords(double x, double y, double rotate)
+	{
+		targetX = x;
+		targetY = y;
+		calcWheelsFromRectCoords(targetX, targetY, rotate);
 	}
 
 	public void calcWheelsFromRectCoords(double x, double y, double rotate)
@@ -351,6 +368,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		SmartDashboard.putNumber("Analog Input", analogIn.getAverageVoltage());
 		SmartDashboard.putNumber("DriveTrain/TargetX", targetX);
 		SmartDashboard.putNumber("DriveTrain/TargetY", targetY);
+		SmartDashboard.putBoolean("DriveTrain/Auto Driving", autoDriving);
+		SmartDashboard.putBoolean("DriveTrain/Auto Rotating", whileRotating);
 	}
 	
     public void initDefaultCommand()

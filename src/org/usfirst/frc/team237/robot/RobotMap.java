@@ -11,10 +11,10 @@ public class RobotMap {
 	public class DriveMap
 	{
 		//Offsets rotation on pods
-		public static final int pod0Offset = 448-512;  //FrontRight 1_____0
-		public static final int pod1Offset = 295-512;  //FrontLeft  |  ^  |
+		public static final int pod0Offset = 445-512;  //FrontRight 1_____0
+		public static final int pod1Offset = 290-512;  //FrontLeft  |  ^  |
 		public static final int pod2Offset = 971-512;  //RearLeft   |  |  |
-		public static final int pod3Offset = 888-512;  //RearRight  2_____3
+		public static final int pod3Offset = 895-512;  //RearRight  2_____3
 		
 		//CAN Addresses for pod drive motors
 		public static final int pod0 = 1;

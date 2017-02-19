@@ -1,9 +1,11 @@
 package org.usfirst.frc.team237.robot;
 
-import org.usfirst.frc.team237.robot.commands.autonomous.RedRightGear;
-import org.usfirst.frc.team237.robot.subsystems.*;
+import org.usfirst.frc.team237.robot.commands.autonomous.CenterGearGroup;
+import org.usfirst.frc.team237.robot.subsystems.DriveSubsystem;
+import org.usfirst.frc.team237.robot.subsystems.IntakeSubsystem;
+import org.usfirst.frc.team237.robot.subsystems.RopeSubsystem;
+import org.usfirst.frc.team237.robot.subsystems.ShooterSubsystem;
 
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -63,7 +65,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = new RedRightGear();
+		driveTrain.lightOn();
+		autonomousCommand = new CenterGearGroup();
 		
 		/*
 		String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
@@ -99,6 +102,7 @@ public class Robot extends IterativeRobot {
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
+		driveTrain.disableFOD();
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
 	}

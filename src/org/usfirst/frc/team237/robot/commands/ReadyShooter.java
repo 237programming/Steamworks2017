@@ -15,7 +15,7 @@ public class ReadyShooter extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	Robot.shooterSubsystem.lightOn();
-    	Robot.shooterSubsystem.setShooter(21000);
+    	Robot.shooterSubsystem.setShooter(23000);
     }
 
     // Called repeatedly when this Command is scheduled to run
