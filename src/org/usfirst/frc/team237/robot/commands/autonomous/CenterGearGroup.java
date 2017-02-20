@@ -1,18 +1,19 @@
 package org.usfirst.frc.team237.robot.commands.autonomous;
 
 import org.usfirst.frc.team237.robot.commands.DriveForTimeAtSpeed;
+import org.usfirst.frc.team237.robot.commands.RotateTo;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-/**
- *
- */
 public class CenterGearGroup extends CommandGroup {
 
     public CenterGearGroup() {
     	addSequential(new DriveForTimeAtSpeed(2.125, 0.25, 0, 0));
     	addSequential(new AlignToGear(1.9, 2));
     	addSequential(new DriveForTimeAtSpeed(0.5, 0.25, 0, 0));
+    	addSequential(new DriveForTimeAtSpeed(2, 0, 0, 0));
+    	addSequential(new DriveForTimeAtSpeed(1, 0.4, -180, 0));
+    	addSequential(new RotateTo(-90));
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());

@@ -1,6 +1,9 @@
 package org.usfirst.frc.team237.robot;
 
+import org.usfirst.frc.team237.robot.commands.DriveForTimeAtSpeed;
 import org.usfirst.frc.team237.robot.commands.autonomous.BlueLeftGear;
+import org.usfirst.frc.team237.robot.commands.autonomous.BlueRightGear;
+import org.usfirst.frc.team237.robot.commands.autonomous.CenterGearGroup;
 import org.usfirst.frc.team237.robot.subsystems.DriveSubsystem;
 import org.usfirst.frc.team237.robot.subsystems.IntakeSubsystem;
 import org.usfirst.frc.team237.robot.subsystems.RopeSubsystem;
@@ -22,7 +25,7 @@ public class Robot extends IterativeRobot {
 	public static RopeSubsystem ropeSubsystem       = new RopeSubsystem();
 	
 	Command autonomousCommand;
-	SendableChooser<Command> chooser = new SendableChooser<>();
+	SendableChooser chooser = new SendableChooser();
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -30,9 +33,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		oi = new OI();
+		oi = new OI();	
 		chooser.addDefault("Default Auto", autonomousCommand);
-		SmartDashboard.putData("Auto mode", chooser);
+		SmartDashboard.putData("Auto mode", chooser);	
 	}
 
 	/**
@@ -51,35 +54,43 @@ public class Robot extends IterativeRobot {
 		driveTrain.post();
 		shooterSubsystem.post();
 		
-/*		String autoSelected = SmartDashboard.getString("SmartDashboard/AutoCommand");
-		autoSelected = autoSelected.toLowerCase();
-		switch(autoSelected)
-		{
+		String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
+		
+		switch(autoSelected) {
 			case "Blue Left":
-				
+				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Left");
+				autonomousCommand = new BlueLeftGear();
 			break;
 				
 			case "Blue Center":
-				
+				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Center");
+				autonomousCommand = new CenterGearGroup();
 			break;
 				
 			case "Blue Right":
-				
+				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Right");
+				autonomousCommand = new BlueRightGear();
 			break;
 				
 			case "Red Left":
-				
+				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Left");
+				autonomousCommand = new BlueLeftGear();
 			break;
 				
 			case "Red Center":
-				
+				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Center");
+				autonomousCommand = new CenterGearGroup();
 			break;
 				
 			case "Red Right":
-				
+				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Right");
+				autonomousCommand = new BlueRightGear();
 			break;
+			default:
+				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Do Nothing");
+				autonomousCommand = new DriveForTimeAtSpeed(0, 0, 0, 0);
 		}
-*/
+
 	}
 
 	/**
@@ -95,22 +106,46 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		autonomousCommand = (Command) chooser.getSelected();
 		driveTrain.lightOn();
-		autonomousCommand = new BlueLeftGear();
+		autonomousCommand = new CenterGearGroup();
 		
-		/*
 		String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
 		
 		switch(autoSelected) {
-			case "My Auto":
-				autonomousCommand = new MyAutoCommand();
-				break;
-			case "Default Auto":
-				default:
-					autonomousCommand = new ExampleCommand();
-					break;
+				case "Blue Left":
+				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Left");
+				autonomousCommand = new BlueLeftGear();
+			break;
+				
+			case "Blue Center":
+				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Center");
+				autonomousCommand = new CenterGearGroup();
+			break;
+				
+			case "Blue Right":
+				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Right");
+				autonomousCommand = new BlueRightGear();
+			break;
+				
+			case "Red Left":
+				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Left");
+				autonomousCommand = new BlueLeftGear();
+			break;
+				
+			case "Red Center":
+				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Center");
+				autonomousCommand = new CenterGearGroup();
+			break;
+				
+			case "Red Right":
+				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Right");
+				autonomousCommand = new BlueRightGear();
+			break;
+			default:
+				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Do Nothing");
+				autonomousCommand = new DriveForTimeAtSpeed(0, 0, 0, 0);
 		}
-		 */
 
 		// schedule the autonomous command (example)
 		if (autonomousCommand != null)
@@ -133,6 +168,8 @@ public class Robot extends IterativeRobot {
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
 		driveTrain.disableFOD();
+		shooterSubsystem.setShooter(0);
+		intakeSubsystem.intakeOff();
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
 	}
