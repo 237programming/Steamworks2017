@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -25,7 +26,8 @@ public class Robot extends IterativeRobot {
 	public static RopeSubsystem ropeSubsystem       = new RopeSubsystem();
 	
 	Command autonomousCommand;
-	SendableChooser chooser = new SendableChooser();
+	SendableChooser<Command> chooser;
+	NetworkTable table;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -33,9 +35,13 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		oi = new OI();	
-		chooser.addDefault("Default Auto", autonomousCommand);
-		SmartDashboard.putData("Auto mode", chooser);	
+		oi = new OI();
+		chooser = new SendableChooser<Command>();
+		chooser.addDefault("Default Auto", new DriveForTimeAtSpeed(0, 0, 0, 0));
+		chooser.addObject("Blue Left", new BlueLeftGear());
+		chooser.addObject("Blue Center", new CenterGearGroup());
+		chooser.addObject("Blue Right", new BlueRightGear());
+		SmartDashboard.putData("Auto mode", chooser);
 	}
 
 	/**
@@ -54,42 +60,42 @@ public class Robot extends IterativeRobot {
 		driveTrain.post();
 		shooterSubsystem.post();
 		
-		String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
-		
-		switch(autoSelected) {
-			case "Blue Left":
-				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Left");
-				autonomousCommand = new BlueLeftGear();
-			break;
-				
-			case "Blue Center":
-				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Center");
-				autonomousCommand = new CenterGearGroup();
-			break;
-				
-			case "Blue Right":
-				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Right");
-				autonomousCommand = new BlueRightGear();
-			break;
-				
-			case "Red Left":
-				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Left");
-				autonomousCommand = new BlueLeftGear();
-			break;
-				
-			case "Red Center":
-				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Center");
-				autonomousCommand = new CenterGearGroup();
-			break;
-				
-			case "Red Right":
-				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Right");
-				autonomousCommand = new BlueRightGear();
-			break;
-			default:
-				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Do Nothing");
-				autonomousCommand = new DriveForTimeAtSpeed(0, 0, 0, 0);
-		}
+//		String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
+//		
+//		switch(autoSelected) {
+//			case "Blue Left":
+//				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Left");
+//				autonomousCommand = new BlueLeftGear();
+//			break;
+//				
+//			case "Blue Center":
+//				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Center");
+//				autonomousCommand = new CenterGearGroup();
+//			break;
+//				
+//			case "Blue Right":
+//				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Right");
+//				autonomousCommand = new BlueRightGear();
+//			break;
+//				
+//			case "Red Left":
+//				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Left");
+//				autonomousCommand = new BlueLeftGear();
+//			break;
+//				
+//			case "Red Center":
+//				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Center");
+//				autonomousCommand = new CenterGearGroup();
+//			break;
+//				
+//			case "Red Right":
+//				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Right");
+//				autonomousCommand = new BlueRightGear();
+//			break;
+//			default:
+//				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Do Nothing");
+//				autonomousCommand = new DriveForTimeAtSpeed(0, 0, 0, 0);
+//		}
 
 	}
 
@@ -106,50 +112,50 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = (Command) chooser.getSelected();
 		driveTrain.lightOn();
-		autonomousCommand = new CenterGearGroup();
+		autonomousCommand = (Command) chooser.getSelected();
+		if(autonomousCommand != null) autonomousCommand.start();
 		
-		String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
-		
-		switch(autoSelected) {
-				case "Blue Left":
-				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Left");
-				autonomousCommand = new BlueLeftGear();
-			break;
-				
-			case "Blue Center":
-				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Center");
-				autonomousCommand = new CenterGearGroup();
-			break;
-				
-			case "Blue Right":
-				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Right");
-				autonomousCommand = new BlueRightGear();
-			break;
-				
-			case "Red Left":
-				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Left");
-				autonomousCommand = new BlueLeftGear();
-			break;
-				
-			case "Red Center":
-				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Center");
-				autonomousCommand = new CenterGearGroup();
-			break;
-				
-			case "Red Right":
-				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Right");
-				autonomousCommand = new BlueRightGear();
-			break;
-			default:
-				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Do Nothing");
-				autonomousCommand = new DriveForTimeAtSpeed(0, 0, 0, 0);
-		}
+//		String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
+//		
+//		switch(autoSelected) {
+//				case "Blue Left":
+//				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Left");
+//				autonomousCommand = new BlueLeftGear();
+//			break;
+//				
+//			case "Blue Center":
+//				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Center");
+//				autonomousCommand = new CenterGearGroup();
+//			break;
+//				
+//			case "Blue Right":
+//				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Blue Right");
+//				autonomousCommand = new BlueRightGear();
+//			break;
+//				
+//			case "Red Left":
+//				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Left");
+//				autonomousCommand = new BlueLeftGear();
+//			break;
+//				
+//			case "Red Center":
+//				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Center");
+//				autonomousCommand = new CenterGearGroup();
+//			break;
+//				
+//			case "Red Right":
+//				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Red Right");
+//				autonomousCommand = new BlueRightGear();
+//			break;
+//			default:
+//				SmartDashboard.putString("SmartDashboard/AutoCommand/String 5", "Do Nothing");
+//				autonomousCommand = new DriveForTimeAtSpeed(0, 0, 0, 0);
+//		}
 
 		// schedule the autonomous command (example)
-		if (autonomousCommand != null)
-			autonomousCommand.start();
+//		if (autonomousCommand != null)
+//			autonomousCommand.start();
 	}
 
 	/**
@@ -172,6 +178,7 @@ public class Robot extends IterativeRobot {
 		intakeSubsystem.intakeOff();
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
+		driveTrain.lightOn();
 	}
 
 	/**

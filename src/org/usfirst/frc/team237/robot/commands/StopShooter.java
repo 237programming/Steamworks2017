@@ -17,7 +17,6 @@ public class StopShooter extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.shooterSubsystem.lightOff();
     	Robot.shooterSubsystem.clearIAccum();
     	Robot.shooterSubsystem.setShooter(0);
     }
@@ -38,7 +37,6 @@ public class StopShooter extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	Robot.shooterSubsystem.lightOff();
     	Robot.shooterSubsystem.setShooter(0);
     }
 }

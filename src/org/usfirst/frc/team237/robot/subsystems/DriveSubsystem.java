@@ -43,7 +43,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		pod3 = new PodSubsystem(RobotMap.DriveMap.pod3, RobotMap.DriveMap.pod3Steering, 3, RobotMap.DriveMap.pod3Offset); //RearRight  3_____0
 	
 		//Instantiate gyro for field oriented drive
-		gyro = new AHRS(SerialPort.Port.kUSB);
+		gyro = new AHRS(SerialPort.Port.kUSB, AHRS.SerialDataType.kProcessedData, (byte) 200);
 		gyro.reset();
 		
 		//instantiate PID for field oriented drive (F.O.D.)
@@ -137,13 +137,21 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	public void disableRotateTo()
 	{
 		angularPID.disable();
-		autoDrive(0, 0, 0);
+		zeroWheelSpeeds();
 		whileRotating = false;
 	}
 	
 	public double getYaw()
 	{
 		return gyro.pidGet();
+	}
+	
+	public void zeroWheelSpeeds()
+	{
+		pod0.setWheelSpeed(0);
+		pod1.setWheelSpeed(0);
+		pod2.setWheelSpeed(0);
+		pod3.setWheelSpeed(0);
 	}
 	
 	//Pass in a polar vector and angle the robot will move in that direction and rotation
@@ -176,6 +184,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	{
 		x      = -OI.strafeJoystick.getX();
 		y      = -OI.strafeJoystick.getY();
+		if(!fieldOriented)
 		rotate = -OI.rotateJoystick.getX();
 		
 		//cubic ramping
@@ -283,7 +292,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
 		//find steering angles
 		//controls to keep wheels from turning when stick returns to zero
-		if (!inDeadBand || fieldOriented || whileRotating)
+		if (!inDeadBand || autoDriving || whileRotating)
 		{
 			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
 			double pod0SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
@@ -294,11 +303,17 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 			pod2.setSteeringAngle (pod2SteeringAngle);
 			pod3.setSteeringAngle (pod3SteeringAngle);
 		}
-		
-		pod0.setWheelSpeed(pod0WheelSpeed);
-		pod1.setWheelSpeed(pod1WheelSpeed);	
-		pod2.setWheelSpeed(pod2WheelSpeed);
-		pod3.setWheelSpeed(pod3WheelSpeed);
+		if (!inDeadBand || autoDriving || whileRotating ) {
+			pod0.setWheelSpeed(pod0WheelSpeed);
+			pod1.setWheelSpeed(pod1WheelSpeed);	
+			pod2.setWheelSpeed(pod2WheelSpeed);
+			pod3.setWheelSpeed(pod3WheelSpeed);
+		} else {
+			pod0.setWheelSpeed(0);
+			pod1.setWheelSpeed(0);	
+			pod2.setWheelSpeed(0);
+			pod3.setWheelSpeed(0);
+		}
 	}
 	
 	public void testPodClosedLoop(int pod, double speed, double angle)

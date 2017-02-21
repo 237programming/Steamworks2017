@@ -1,6 +1,5 @@
 package org.usfirst.frc.team237.robot;
 
-import org.usfirst.frc.team237.robot.commands.DriveForTimeAtSpeed;
 import org.usfirst.frc.team237.robot.commands.IntakeCommand;
 import org.usfirst.frc.team237.robot.commands.IntakeOffCommand;
 import org.usfirst.frc.team237.robot.commands.OuttakeCommand;
@@ -13,6 +12,7 @@ import org.usfirst.frc.team237.robot.commands.StopRopeCommand;
 import org.usfirst.frc.team237.robot.commands.StopShooter;
 import org.usfirst.frc.team237.robot.commands.ToggleDriveOrientation;
 import org.usfirst.frc.team237.robot.commands.ToggleGearLightCommand;
+import org.usfirst.frc.team237.robot.commands.ToggleShooterLightCommand;
 import org.usfirst.frc.team237.robot.commands.ZeroGyro;
 import org.usfirst.frc.team237.robot.commands.autonomous.AlignToGear;
 import org.usfirst.frc.team237.robot.subsystems.RopeSubsystem.Speed;
@@ -32,7 +32,8 @@ public class OI {
 	public static Joystick controls       = new Joystick(2);
 	
 	public static Button toggleFOD          = new JoystickButton(strafeJoystick, 1);
-	public static Button toggleGearLight    = new JoystickButton(rotateJoystick, 1);
+	public static Button toggleGearLight    = new JoystickButton(rotateJoystick, 2);
+	public static Button toggleShooterLight = new JoystickButton(rotateJoystick, 1);
 	public static Button leftPeg            = new JoystickButton(strafeJoystick, 4);
 	public static Button middlePeg          = new JoystickButton(strafeJoystick, 3);
 	public static Button rightPeg           = new JoystickButton(strafeJoystick, 5);
@@ -52,9 +53,10 @@ public class OI {
 		middlePeg          .whenPressed  (new RotateTo(0));
 		rightPeg           .whenPressed  (new RotateTo(-60));
 		spin180            .whenPressed  (new RotateTo(-180));
-		
 		toggleFOD          .whenPressed  (new ToggleDriveOrientation());
+		
 		toggleGearLight    .whenPressed  (new ToggleGearLightCommand());
+		toggleShooterLight .whenPressed  (new ToggleShooterLightCommand());
 		zeroGyroButton     .whenPressed  (new ZeroGyro());
 		
 		autoHangGear       .whenPressed  (new AlignToGear(1.9, 2));
