@@ -26,7 +26,7 @@ public class ShooterSubsystem extends Subsystem {
 		shooterTalon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		shooterTalon.changeControlMode(TalonControlMode.Speed);
 		shooterTalon.configNominalOutputVoltage(+0.0, -0.0);
-		shooterTalon.configPeakOutputVoltage(11, -11);
+		shooterTalon.configPeakOutputVoltage(0, -12);
 		shooterTalon.setProfile(0);
 		shooterTalon.setP(RobotMap.PIDMap.SHOOTER_P);
 		shooterTalon.setI(RobotMap.PIDMap.SHOOTER_I);
@@ -110,7 +110,7 @@ public class ShooterSubsystem extends Subsystem {
     
     public void post()
     {
-    	SmartDashboard.putNumber("Shooter/Shooter Speed", shooterSpeed());
+    	SmartDashboard.putNumber("Shooter/Shooter Speed", (int) Math.round(shooterSpeed()));
     	SmartDashboard.putNumber("Shooter/Encoder Counts", shooterTalon.getEncPosition());
     	SmartDashboard.putNumber("Shooter/Target Speed", targetSpeed);
     	SmartDashboard.putNumber("Shooter/Shooter error", shooterTalon.getError());

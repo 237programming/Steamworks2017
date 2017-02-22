@@ -41,9 +41,9 @@ public class RobotMap {
 		public static final double ANG_I = 0;
 		public static final double ANG_D = 0.72;
 		
-		public static final double SHOOTER_P = 0.001;
+		public static final double SHOOTER_P = 0.7;
 		public static final double SHOOTER_I = 0;
-		public static final double SHOOTER_D = 0.1;
+		public static final double SHOOTER_D = 4;
 	}
 	
 	public class ShooterMap
