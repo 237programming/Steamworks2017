@@ -27,7 +27,8 @@ public class Robot extends IterativeRobot {
 	
 	Command autonomousCommand;
 	SendableChooser<Command> chooser;
-	NetworkTable table;
+	
+	double time = 0, speed = 0;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -59,6 +60,8 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 		driveTrain.post();
 		shooterSubsystem.post();
+		time = SmartDashboard.getNumber("Time", 0.1);
+		speed = SmartDashboard.getNumber("Speed", 0.1);
 		
 //		String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
 //		
@@ -173,7 +176,8 @@ public class Robot extends IterativeRobot {
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
-		driveTrain.disableFOD();
+		if(OI.toggleFOD.get()) driveTrain.enableFOD();
+		else driveTrain.disableFOD();
 		shooterSubsystem.setShooter(0);
 		intakeSubsystem.intakeOff();
 		if (autonomousCommand != null)

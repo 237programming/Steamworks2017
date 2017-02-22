@@ -25,14 +25,15 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	private double   x, y, rotate;
 	private double   targetX = 0, targetY  = 0;
 	private double   angularTarget = 0;
-	private double   correctionAngle = 0; 
+	private double   PIDOutput = 0; 
 	private double   joystickDeadband = RobotMap.ControlMap.joystickDeadband;
 	
 	private boolean  fieldOriented = false;
 	private boolean  whileRotating = false;
 	private boolean  inDeadBand    = true;
 	public  boolean  autoDriving   = false;
-
+	private boolean  fieldRotating = false;
+	
 	private DigitalInput digitalIn;
 	private AnalogInput analogIn;
 	public DriveSubsystem()
@@ -127,10 +128,27 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	public void enableRotateTo()
 	{
 		whileRotating = true;
-		correctionAngle = 0;
+		PIDOutput = 0;
 		angularPID.disable();
 		
 		angularPID.setPID(RobotMap.PIDMap.ANG_P, RobotMap.PIDMap.ANG_I, RobotMap.PIDMap.ANG_D);
+		enableAngularControl();
+	}
+	
+	public void enableRotateToV2()
+	{
+		whileRotating = true;
+		PIDOutput = 0;
+		angularPID.disable();
+//		pod0.setDriveMaxVoltage(12, -12);
+//		pod1.setDriveMaxVoltage(12, -12);
+//		pod2.setDriveMaxVoltage(12, -12);
+//		pod3.setDriveMaxVoltage(12, -12);
+		
+		angularPID.setOutputRange(-8500, 8500);
+		angularPID.setPID(RobotMap.PIDMap.ANG_P, RobotMap.PIDMap.ANG_I, RobotMap.PIDMap.ANG_D);
+//		angularPID.setSetpoint(angularTarget);
+//		angularPID.enable();
 		enableAngularControl();
 	}
 	
@@ -139,6 +157,19 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		angularPID.disable();
 		zeroWheelSpeeds();
 		whileRotating = false;
+	}
+	
+	public void disableRotateToV2()
+	{
+		whileRotating = false;
+		angularPID.disable();
+		zeroWheelSpeeds();
+		angularPID.setOutputRange(-180, 180);
+		angularPID.setPID(RobotMap.PIDMap.ANG_P, RobotMap.PIDMap.ANG_I, RobotMap.PIDMap.ANG_D);
+		pod0.setDriveMaxVoltage(12, 0);
+		pod1.setDriveMaxVoltage(12, 0);
+		pod2.setDriveMaxVoltage(12, 0);
+		pod3.setDriveMaxVoltage(12, 0);
 	}
 	
 	public double getYaw()
@@ -170,13 +201,27 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	
 	public void PIDDrive()
 	{
-		if (Math.abs(correctionAngle) < 1)
-		{
-			calcWheelsFromRectCoords(targetX, targetY, 0);
-		}
-		else {
-			calcWheelsFromRectCoords(targetX, targetY, correctionAngle); 
-		}
+		calcWheelsFromRectCoords(targetX, targetY, PIDOutput); 
+//		if (Math.abs(correctionAngle) < 1 && fieldOriented)
+//		{
+//			calcWheelsFromRectCoords(targetX, targetY, 0);
+//		}
+//		else {
+//			calcWheelsFromRectCoords(targetX, targetY, correctionAngle); 
+//		}
+	}
+	
+	public void PIDDriveV2()
+	{			
+		pod0.setSteeringAngle (45);
+		pod1.setSteeringAngle (45+90);
+		pod2.setSteeringAngle (-45-90);
+		pod3.setSteeringAngle (-45);
+
+		pod0.setWheelSpeed(PIDOutput);
+		pod1.setWheelSpeed(PIDOutput);	
+		pod2.setWheelSpeed(PIDOutput);
+		pod3.setWheelSpeed(PIDOutput);
 	}
 	
 	//Drive the Robot in teleop. two joystick input
@@ -191,6 +236,25 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		x = Math.pow(x, 3);
 		y = Math.pow(y, 3);
 		//rotate = Math.pow(rotate, 3);
+		
+		if(fieldOriented && !(Math.abs(-OI.rotateJoystick.getX()) < joystickDeadband))
+		{
+			fieldRotating = true;
+		}
+		
+		if(fieldOriented && fieldRotating)
+		{
+			fieldOriented = false;
+			disableFOD();
+			rotate = -OI.rotateJoystick.getX();
+		}
+		
+		if(fieldRotating && (Math.abs(-OI.rotateJoystick.getX()) < joystickDeadband))
+		{
+			fieldRotating = false;
+			fieldOriented = true;
+			enableFOD();
+		}
 		
 		if (Math.abs(x) < joystickDeadband)
 			x = 0;
@@ -379,13 +443,14 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		SmartDashboard.putNumber("DriveTrain/Rotate Actual:", OI.rotateJoystick.getZ());
 		SmartDashboard.putNumber("DriveTrain/Gyro yaw:", gyro.getYaw());
 		SmartDashboard.putNumber("DriveTrain/Angular target:", angularTarget);
-		SmartDashboard.putNumber("DriveTrain/Correction Angle:", correctionAngle);
+		SmartDashboard.putNumber("DriveTrain/Correction Angle:", PIDOutput);
 		SmartDashboard.putBoolean("Digital Input", digitalIn.get());
 		SmartDashboard.putNumber("Analog Input", analogIn.getAverageVoltage());
 		SmartDashboard.putNumber("DriveTrain/TargetX", targetX);
 		SmartDashboard.putNumber("DriveTrain/TargetY", targetY);
 		SmartDashboard.putBoolean("DriveTrain/Auto Driving", autoDriving);
 		SmartDashboard.putBoolean("DriveTrain/Auto Rotating", whileRotating);
+		SmartDashboard.putBoolean("DriveTrain/Field Rotating", fieldRotating);
 	}
 	
     public void initDefaultCommand()
@@ -397,7 +462,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	@Override
 	public void pidWrite(double output)
 	{
-		correctionAngle = -output; 
+		PIDOutput = -output;
 	}
 	
 	public void zeroGyro()

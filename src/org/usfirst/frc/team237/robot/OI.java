@@ -1,5 +1,7 @@
 package org.usfirst.frc.team237.robot;
 
+import org.usfirst.frc.team237.robot.commands.DisableFOD;
+import org.usfirst.frc.team237.robot.commands.EnableFOD;
 import org.usfirst.frc.team237.robot.commands.IntakeCommand;
 import org.usfirst.frc.team237.robot.commands.IntakeOffCommand;
 import org.usfirst.frc.team237.robot.commands.OuttakeCommand;
@@ -10,7 +12,6 @@ import org.usfirst.frc.team237.robot.commands.StartFeeder;
 import org.usfirst.frc.team237.robot.commands.StopFeeder;
 import org.usfirst.frc.team237.robot.commands.StopRopeCommand;
 import org.usfirst.frc.team237.robot.commands.StopShooter;
-import org.usfirst.frc.team237.robot.commands.ToggleDriveOrientation;
 import org.usfirst.frc.team237.robot.commands.ToggleGearLightCommand;
 import org.usfirst.frc.team237.robot.commands.ToggleShooterLightCommand;
 import org.usfirst.frc.team237.robot.commands.ZeroGyro;
@@ -31,7 +32,7 @@ public class OI {
 	public static Joystick rotateJoystick = new Joystick(0);
 	public static Joystick controls       = new Joystick(2);
 	
-	public static Button toggleFOD          = new JoystickButton(strafeJoystick, 1);
+	public static Button toggleFOD          = new JoystickButton(controls, 9);
 	public static Button toggleGearLight    = new JoystickButton(rotateJoystick, 2);
 	public static Button toggleShooterLight = new JoystickButton(rotateJoystick, 1);
 	public static Button leftPeg            = new JoystickButton(strafeJoystick, 4);
@@ -39,6 +40,7 @@ public class OI {
 	public static Button rightPeg           = new JoystickButton(strafeJoystick, 5);
 	public static Button spin180            = new JoystickButton(strafeJoystick, 2);
 	public static Button zeroGyroButton     = new JoystickButton(strafeJoystick, 8);
+	public static Button shootAngle         = new JoystickButton(rotateJoystick, 2);
 	public static Button readyShooter       = new JoystickButton(controls, 1);
 	public static Button outtakeButton      = new JoystickButton(controls, 2);
 	public static Button intakeButton       = new JoystickButton(controls, 3);
@@ -53,7 +55,12 @@ public class OI {
 		middlePeg          .whenPressed  (new RotateTo(0));
 		rightPeg           .whenPressed  (new RotateTo(-60));
 		spin180            .whenPressed  (new RotateTo(-180));
-		toggleFOD          .whenPressed  (new ToggleDriveOrientation());
+		shootAngle         .whenPressed  (new RotateTo(-166));
+//		leftPeg            .whenPressed  (new SmartRotateTo(60));
+//		middlePeg          .whenPressed  (new SmartRotateTo(0));
+//		rightPeg           .whenPressed  (new SmartRotateTo(-60));
+//		spin180            .whenPressed  (new SmartRotateTo(-180));
+//		shootAngle         .whenPressed  (new SmartRotateTo(-166));
 		
 		toggleGearLight    .whenPressed  (new ToggleGearLightCommand());
 		toggleShooterLight .whenPressed  (new ToggleShooterLightCommand());
@@ -79,6 +86,9 @@ public class OI {
 		
 		shootButton        .whenPressed  (new StartFeeder());
 		shootButton        .whenReleased (new StopFeeder());
+		
+		toggleFOD          .whenPressed  (new EnableFOD());
+		toggleFOD          .whenReleased (new DisableFOD());
 	}
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a

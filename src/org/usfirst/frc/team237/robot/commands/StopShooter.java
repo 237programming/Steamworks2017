@@ -19,6 +19,8 @@ public class StopShooter extends Command {
     protected void initialize() {
     	Robot.shooterSubsystem.clearIAccum();
     	Robot.shooterSubsystem.setShooter(0);
+    	Robot.shooterSubsystem.stopShooter();
+    	Robot.shooterSubsystem.lightOff();
     }
 
     // Called repeatedly when this Command is scheduled to run

@@ -26,18 +26,23 @@ public class ShooterSubsystem extends Subsystem {
 		shooterTalon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		shooterTalon.changeControlMode(TalonControlMode.Speed);
 		shooterTalon.configNominalOutputVoltage(+0.0, -0.0);
-		shooterTalon.configPeakOutputVoltage(0, -8.0);
+		shooterTalon.configPeakOutputVoltage(11, -11);
 		shooterTalon.setProfile(0);
-		shooterTalon.setP(0.4);
-//		shooterTalon.setP(0.2);
-		shooterTalon.setI(0.002);
-//		shooterTalon.setI(0.1);
-		shooterTalon.setD(2);
+		shooterTalon.setP(RobotMap.PIDMap.SHOOTER_P);
+		shooterTalon.setI(RobotMap.PIDMap.SHOOTER_I);
+		shooterTalon.setD(RobotMap.PIDMap.SHOOTER_D);
 		shooterTalon.setF(0.1077);
 		shooterTalon.reverseOutput(true);
 		shooterTalon.reverseSensor(true);
+		shooterTalon.configEncoderCodesPerRev(4096);
 		feederTalon.changeControlMode(TalonControlMode.PercentVbus);
 		//23,200
+	}
+	
+	public void stopShooter()
+	{
+		shooterTalon.changeControlMode(TalonControlMode.PercentVbus);
+		shooterTalon.set(0);
 	}
 	
 	public void clearIAccum()
@@ -64,13 +69,14 @@ public class ShooterSubsystem extends Subsystem {
 	
 	public void setShooter(double speed)
 	{
+		shooterTalon.changeControlMode(TalonControlMode.Speed);
 		targetSpeed = speed;
 		shooterTalon.set(speed);
 	}
 	
 	public double shooterSpeed()
 	{
-		return shooterTalon.get();
+		return shooterTalon.getSpeed();
 	}
 	
 	public void feederIn()
@@ -91,7 +97,7 @@ public class ShooterSubsystem extends Subsystem {
 	public boolean upToSpeed(double error)
 	{
 //		return (shooterSpeed() < targetSpeed + error && shooterSpeed() > targetSpeed - error) && targetSpeed != 0;
-		return shooterSpeed() > targetSpeed-error;
+		return (shooterSpeed() > targetSpeed-error);
 	}
 	
     // Put methods for controlling this subsystem
@@ -105,6 +111,7 @@ public class ShooterSubsystem extends Subsystem {
     public void post()
     {
     	SmartDashboard.putNumber("Shooter/Shooter Speed", shooterSpeed());
+    	SmartDashboard.putNumber("Shooter/Encoder Counts", shooterTalon.getEncPosition());
     	SmartDashboard.putNumber("Shooter/Target Speed", targetSpeed);
     	SmartDashboard.putNumber("Shooter/Shooter error", shooterTalon.getError());
     	SmartDashboard.putBoolean("Shooter/Up to speed", upToSpeed(500));

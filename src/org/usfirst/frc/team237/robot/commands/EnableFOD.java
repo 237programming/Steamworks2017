@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ToggleDriveOrientation extends Command {
+public class EnableFOD extends Command {
 
-    public ToggleDriveOrientation() {
+    public EnableFOD() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     	requires(Robot.driveTrain);
@@ -17,11 +17,7 @@ public class ToggleDriveOrientation extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	if(Robot.driveTrain.fieldOriented()) {
-    		Robot.driveTrain.disableFOD();
-    	} else {
-    		Robot.driveTrain.enableFOD();
-    	}
+    	Robot.driveTrain.enableFOD();
     }
 
     // Called repeatedly when this Command is scheduled to run

@@ -12,9 +12,10 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class BlueRightGear extends CommandGroup {
 
     public BlueRightGear() {
-    	addSequential(new DriveForTimeAtSpeed(1.85, 0.42, 0, 0));
-    	addSequential(new DriveForTimeAtSpeed(0.5, 0, 0, 0));
-    	addSequential(new RotateTo(-55));
+    	addSequential(new DriveForTimeAtSpeed(1.2, 0.9, -2, 0));
+//    	addSequential(new DriveForTimeAtSpeed(1.85, 0.42, 0, 0));
+    	addSequential(new DriveForTimeAtSpeed(0.25, 0, 0, 0));
+    	addSequential(new RotateTo(-60));
     	addSequential(new DriveForTimeAtSpeed(0.1, 0.25, 0, 0));
 //    	addSequential(new AlignToGear(1.9, 2));
 //    	addSequential(new DriveForTimeAtSpeed(1, 0.1, 0, 0));

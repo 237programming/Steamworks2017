@@ -33,7 +33,7 @@ public class PodSubsystem extends Subsystem {
 //		Config voltage
 		steer.setAllowableClosedLoopErr(0);
 		drive.configNominalOutputVoltage(+ 0.0, - 0.0);
-		drive.configPeakOutputVoltage(+ 12.0, - 0.0);
+		drive.configPeakOutputVoltage(+ 12.0, - 12.0);
 		drive.setProfile(0);
 		drive.setP(0.20);
 		drive.setI(0.002);
@@ -128,6 +128,11 @@ public class PodSubsystem extends Subsystem {
     	SmartDashboard.putNumber("Pod" + podNumber + "/Drive/D",drive.getD() );
     	SmartDashboard.putNumber("Pod" + podNumber + "/Drive/F",drive.getF() );
 //		Give SmartDash data
+	}
+	
+	public void setDriveMaxVoltage(double forward, double reverse)
+	{
+		drive.configPeakOutputVoltage(forward, reverse);
 	}
 	
 	public int getOffSet() {
