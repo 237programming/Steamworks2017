@@ -32,7 +32,7 @@ public class AlignToGear extends Command {
     	targetVisible = Robot.driveTrain.getDigital();
 		Robot.driveTrain.zeroSpeeds();
 		Robot.driveTrain.autoDriving = true;
-    	if(!targetVisible) onTarget = true;
+    	//if(!targetVisible) onTarget = true;
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -56,13 +56,15 @@ public class AlignToGear extends Command {
 				onTarget = true;
 			}
     	} else {
-    		targetVisible = false;
+    		headingTheta = 180;
+			Robot.driveTrain.autoDrive(.08, headingTheta, 0);
+			targetVisible = Robot.driveTrain.getDigital();
     	}
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return onTarget || !targetVisible;
+        return onTarget;// || !targetVisible;
     }
 
     // Called once after isFinished returns true
@@ -72,6 +74,7 @@ public class AlignToGear extends Command {
     	Robot.driveTrain.autoDrive(0, headingTheta, 0);
     	Robot.driveTrain.zeroSpeeds();
     	Robot.driveTrain.autoDriving = false;
+    	Robot.driveTrain.disableFOD();
     	onTarget = false;
     }
 
@@ -82,5 +85,6 @@ public class AlignToGear extends Command {
     	Robot.driveTrain.autoDrive(0, headingTheta, 0);
     	Robot.driveTrain.zeroSpeeds();
     	Robot.driveTrain.autoDriving = false;
+    	Robot.driveTrain.disableFOD();
     }
 }

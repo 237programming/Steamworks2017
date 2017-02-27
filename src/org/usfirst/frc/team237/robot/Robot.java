@@ -9,6 +9,9 @@ import org.usfirst.frc.team237.robot.subsystems.IntakeSubsystem;
 import org.usfirst.frc.team237.robot.subsystems.RopeSubsystem;
 import org.usfirst.frc.team237.robot.subsystems.ShooterSubsystem;
 
+import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -43,6 +46,10 @@ public class Robot extends IterativeRobot {
 		chooser.addObject("Blue Center", new CenterGearGroup());
 		chooser.addObject("Blue Right", new BlueRightGear());
 		SmartDashboard.putData("Auto mode", chooser);
+		UsbCamera cam = CameraServer.getInstance().startAutomaticCapture();
+		cam.setResolution(1280, 720);
+		
+		//CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 1920, 1080);
 	}
 
 	/**
@@ -168,6 +175,8 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		driveTrain.post();
+		shooterSubsystem.post();
+		
 	}
 
 	@Override

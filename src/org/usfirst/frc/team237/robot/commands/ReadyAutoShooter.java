@@ -4,9 +4,12 @@ import org.usfirst.frc.team237.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ReadyShooter extends Command {
+/**
+ *
+ */
+public class ReadyAutoShooter extends Command {
 
-    public ReadyShooter() {
+    public ReadyAutoShooter() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     	requires(Robot.shooterSubsystem);
@@ -16,7 +19,7 @@ public class ReadyShooter extends Command {
     protected void initialize() {
     	Robot.shooterSubsystem.lightOn();
     	//Robot.shooterSubsystem.setShooter(800);
-    	Robot.shooterSubsystem.setShooter(25000);
+    	Robot.shooterSubsystem.setShooter(30000);
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -25,7 +28,7 @@ public class ReadyShooter extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	return Robot.shooterSubsystem.upToSpeed(1000);
+    	return Robot.shooterSubsystem.upToSpeed(100);
     }
 
     // Called once after isFinished returns true

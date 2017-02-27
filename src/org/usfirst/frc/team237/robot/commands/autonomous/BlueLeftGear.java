@@ -10,17 +10,18 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class BlueLeftGear extends CommandGroup {
 
     public BlueLeftGear() {
-		addSequential(new DriveForTimeAtSpeed(1.75, 0.42, 7, 0));
-    	addSequential(new RotateTo(55));
-    	addSequential(new DriveForTimeAtSpeed(0.25, 0.3,0,0));
-//    	addSequential(new AlignToGear(1.9, 2));
-//    	addSequential(new DriveForTimeAtSpeed(1, 0.1, 0, 0));
-//    	addSequential(new DriveForTimeAtSpeed(2, 0, 0, 0));
-//    	addSequential(new DriveForTimeAtSpeed(2, 0.4, -180, 0));
-//    	addSequential(new RotateTo(-120));
-//    	addSequential(new DriveForTimeAtSpeed(.4, 0.4, -90, 0));
-//    	addSequential(new ReadyShooter());
-//    	addSequential(new StartFeeder());
+		addSequential(new DriveForTimeAtSpeed(0.98, 0.90, 5, 0));
+		addSequential(new DriveForTimeAtSpeed(0.5, 0.0, 0, 0));
+    	addSequential(new RotateTo(60));
+    	//addSequential(new DriveForTimeAtSpeed(0.35, 0.0,0,0));
+    	//addSequential(new DriveForTimeAtSpeed(0.25, 0.3,0,0));
+    	addSequential(new AlignToGear(1.95, 2.1));
+    	addSequential(new DriveForTimeAtSpeed(1, 0.1, 0, 0));
+    	addSequential(new DriveForTimeAtSpeed(2, 0, 0, 0));
+    	addSequential(new DriveForTimeAtSpeed(1, 0.4, -180, 0));
+    	//addSequential(new RotateTo(-140));
+    	//addSequential(new ReadyShooter());
+    	//addSequential(new StartFeeder());
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());

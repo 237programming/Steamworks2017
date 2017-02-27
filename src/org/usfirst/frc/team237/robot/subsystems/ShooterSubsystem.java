@@ -31,10 +31,10 @@ public class ShooterSubsystem extends Subsystem {
 		shooterTalon.setP(RobotMap.PIDMap.SHOOTER_P);
 		shooterTalon.setI(RobotMap.PIDMap.SHOOTER_I);
 		shooterTalon.setD(RobotMap.PIDMap.SHOOTER_D);
-		shooterTalon.setF(0.1077);
+		shooterTalon.setF(RobotMap.PIDMap.SHOOTER_F);
 		shooterTalon.reverseOutput(true);
 		shooterTalon.reverseSensor(true);
-		shooterTalon.configEncoderCodesPerRev(4096);
+		//shooterTalon.configEncoderCodesPerRev(4096);
 		feederTalon.changeControlMode(TalonControlMode.PercentVbus);
 		//23,200
 	}
@@ -73,7 +73,11 @@ public class ShooterSubsystem extends Subsystem {
 		targetSpeed = speed;
 		shooterTalon.set(speed);
 	}
-	
+	public void setMotorVoltage(double V)
+	{
+		shooterTalon.changeControlMode(TalonControlMode.PercentVbus);
+		shooterTalon.set(V);
+	}
 	public double shooterSpeed()
 	{
 		return shooterTalon.getSpeed();

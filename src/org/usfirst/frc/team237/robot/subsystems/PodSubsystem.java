@@ -62,7 +62,7 @@ public class PodSubsystem extends Subsystem {
 		steer.configNominalOutputVoltage(+ 0.0, - 0.0);
 		steer.configPeakOutputVoltage(+ 12f, - 12f);
 		drive.configNominalOutputVoltage(+ 0.0, - 0.0);
-		drive.configPeakOutputVoltage(+ 8.0, - 0.0);
+		drive.configPeakOutputVoltage(+ 12.0, - 0.0);
 		drive.setProfile(0);
 		drive.setP(0.20);
 		drive.setI(0.002);
