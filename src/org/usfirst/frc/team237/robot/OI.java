@@ -13,6 +13,7 @@ import org.usfirst.frc.team237.robot.commands.StopFeeder;
 import org.usfirst.frc.team237.robot.commands.StopRopeCommand;
 import org.usfirst.frc.team237.robot.commands.StopShooter;
 import org.usfirst.frc.team237.robot.commands.ToggleGearLightCommand;
+import org.usfirst.frc.team237.robot.commands.ToggleLowPowerMode;
 import org.usfirst.frc.team237.robot.commands.ToggleShooterLightCommand;
 import org.usfirst.frc.team237.robot.commands.ZeroGyro;
 import org.usfirst.frc.team237.robot.commands.autonomous.AlignToGear;
@@ -48,6 +49,7 @@ public class OI {
 	public static Button pullRopeSlowButton = new JoystickButton(controls, 5);
 	public static Button autoHangGear       = new JoystickButton(controls, 6);
 	public static Button shootButton        = new JoystickButton(controls, 7);
+	public static Button toggleLowPower		= new JoystickButton(strafeJoystick, 10);
 	
 	public OI()
 	{
@@ -89,6 +91,8 @@ public class OI {
 		
 		toggleFOD          .whenPressed  (new EnableFOD());
 		toggleFOD          .whenReleased (new DisableFOD());
+		
+		toggleLowPower     .whenPressed (new ToggleLowPowerMode());
 	}
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a

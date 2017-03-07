@@ -7,6 +7,7 @@ import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -14,7 +15,7 @@ public class ShooterSubsystem extends Subsystem {
 	
 	CANTalon shooterTalon;
 	CANTalon feederTalon;
-	
+	Talon agitatorTalon; 
 	Relay light = new Relay(0);
 	
 	private double targetSpeed;
@@ -23,6 +24,7 @@ public class ShooterSubsystem extends Subsystem {
 	{
 		shooterTalon = new CANTalon(RobotMap.ShooterMap.shooterTalon);
 		feederTalon  = new CANTalon(RobotMap.ShooterMap.feederTalon);
+		agitatorTalon = new Talon(RobotMap.ShooterMap.agitatorTalon);
 		shooterTalon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		shooterTalon.changeControlMode(TalonControlMode.Speed);
 		shooterTalon.configNominalOutputVoltage(+0.0, -0.0);
@@ -36,6 +38,7 @@ public class ShooterSubsystem extends Subsystem {
 		shooterTalon.reverseSensor(true);
 		//shooterTalon.configEncoderCodesPerRev(4096);
 		feederTalon.changeControlMode(TalonControlMode.PercentVbus);
+		
 		//23,200
 	}
 	
@@ -86,6 +89,7 @@ public class ShooterSubsystem extends Subsystem {
 	public void feederIn()
 	{
 		feederTalon.set(1.0);
+		agitatorTalon.set(1.0);
 	}
 	
 	public void feederOut()
@@ -96,6 +100,7 @@ public class ShooterSubsystem extends Subsystem {
 	public void feederOff()
 	{
 		feederTalon.set(0.0);
+		agitatorTalon.set(0.0);
 	}
 	
 	public boolean upToSpeed(double error)

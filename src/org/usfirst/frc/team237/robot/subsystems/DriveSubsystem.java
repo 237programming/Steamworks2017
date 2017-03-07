@@ -27,12 +27,13 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	private double   angularTarget = 0;
 	private double   PIDOutput = 0; 
 	private double   joystickDeadband = RobotMap.ControlMap.joystickDeadband;
-	
+	// flags 
 	private boolean  fieldOriented = false;
 	private boolean  whileRotating = false;
 	private boolean  inDeadBand    = true;
 	public  boolean  autoDriving   = false;
 	private boolean  fieldRotating = false;
+	private boolean	 lowPowerMode = false; 
 	
 	private DigitalInput digitalIn;
 	private AnalogInput analogIn;
@@ -58,7 +59,14 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		digitalIn = new DigitalInput(0);
 		analogIn = new AnalogInput(0);
 	}
-	
+	public void enableLowPower(){
+		lowPowerMode = true;
+		
+	}
+	public void disableLowPower(){
+		lowPowerMode = false; 
+		
+	}
 	public void lightOn()
 	{
 		if(light.get() != Relay.Value.kForward) light.set(Relay.Value.kForward);
@@ -211,6 +219,15 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 //		}
 	}
 	
+	public void toggleLowPowerMode(){
+		if(lowPowerMode == false){
+			lowPowerMode = true;
+			
+		}
+		else if(lowPowerMode == true){
+			lowPowerMode = false;
+		}
+	}
 	public void PIDDriveV2()
 	{			
 		pod0.setSteeringAngle (45);
@@ -236,6 +253,27 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		x = Math.pow(x, 3);
 		y = Math.pow(y, 3);
 		//rotate = Math.pow(rotate, 3);
+		// low power mode <-----------------------------------TO CHANGE LOW POWERMODE MAKE MODIFICATIONS HERE
+		if(lowPowerMode){
+			if( x > joystickDeadband ){
+				x = RobotMap.DriveMap.lowPowerSpeed;
+			}
+			else if( x < -joystickDeadband ){
+				x = -RobotMap.DriveMap.lowPowerSpeed;
+			}
+			else{ 
+				x = 0;
+			}
+			if( y > joystickDeadband ){
+				y = RobotMap.DriveMap.lowPowerSpeed;
+			}
+			else if( y < -joystickDeadband ){
+				y = -RobotMap.DriveMap.lowPowerSpeed;
+			}
+			else{ 
+				y = 0;
+			}
+		}
 		
 		if(fieldOriented && !(Math.abs(-OI.rotateJoystick.getX()) < joystickDeadband))
 		{
@@ -356,7 +394,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
 		//find steering angles
 		//controls to keep wheels from turning when stick returns to zero
-		if (!inDeadBand || autoDriving || whileRotating)
+		/*if (!inDeadBand || autoDriving || whileRotating)
 		{
 			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
 			double pod0SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
@@ -372,6 +410,23 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 			pod1.setWheelSpeed(pod1WheelSpeed);	
 			pod2.setWheelSpeed(pod2WheelSpeed);
 			pod3.setWheelSpeed(pod3WheelSpeed);
+		} else {
+			pod0.setWheelSpeed(0);
+			pod1.setWheelSpeed(0);	
+			pod2.setWheelSpeed(0);
+			pod3.setWheelSpeed(0);
+		}*/
+		if (!inDeadBand || autoDriving || whileRotating)
+		{
+			double pod1SteeringAngle = Math.toDegrees(Math.atan2(B, C)); //FRONT RIGHT
+			double pod0SteeringAngle = Math.toDegrees(Math.atan2(B, D)); //FRONT LEFT 
+			double pod3SteeringAngle = Math.toDegrees(Math.atan2(A, D)); //REAR LEFT 
+			double pod2SteeringAngle = Math.toDegrees(Math.atan2(A, C)); //REAR RIGHT
+			pod0.setPodSpeedAndAngle(pod0SteeringAngle, pod0WheelSpeed);
+			pod1.setPodSpeedAndAngle(pod1SteeringAngle, pod1WheelSpeed);
+			pod2.setPodSpeedAndAngle(pod2SteeringAngle, pod2WheelSpeed);
+			pod3.setPodSpeedAndAngle(pod3SteeringAngle, pod3WheelSpeed);
+			
 		} else {
 			pod0.setWheelSpeed(0);
 			pod1.setWheelSpeed(0);	

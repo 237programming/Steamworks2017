@@ -9,16 +9,21 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class RedRightGear extends CommandGroup {
+public class RedLeftGear extends CommandGroup {
 
-    public RedRightGear() {
-		addSequential(new DriveForTimeAtSpeed(2, 0.42, 0, 0));
-    	addSequential(new RotateTo(-60));
+    public RedLeftGear() {
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());
         // these will run in order.
-
+    	addSequential(new DriveForTimeAtSpeed(1.1, 0.90, 1, 0));
+		addSequential(new DriveForTimeAtSpeed(0.5, 0.0, 0, 0));
+    	addSequential(new RotateTo(60));
+    	addSequential(new AlignToGear(1.95, 2.0));
+    	addSequential(new DriveForTimeAtSpeed(1, 0.1, 0, 0));
+    	addSequential(new DriveForTimeAtSpeed(2, 0, 0, 0));
+    	addSequential(new DriveForTimeAtSpeed(1, 0.4, -180, 0));
+    	addSequential(new DriveForTimeAtSpeed(1, 0.4, -90, 0));
         // To run multiple commands at the same time,
         // use addParallel()
         // e.g. addParallel(new Command1());

@@ -16,6 +16,7 @@ public class PodSubsystem extends Subsystem {
 	public int podNumber; 
 	private int offset; 
 	private PIDController steerPID; 
+	private boolean enableSmartSteer = false; 
 	public PodSubsystem(int driveTalon, int steeringTalon, int podNumber){	
 //		Pod constructor without offset
 		drive = new CANTalon(driveTalon);
@@ -110,7 +111,7 @@ public class PodSubsystem extends Subsystem {
 	public void setWheelSpeed(double speed){
 		targetSpeed = speed;
 		enableClosedLoopSpeed();
-		post();
+		//post();
 //		Set speed using enableClosedLoopSpeed
 	}
 	public void intiDefaultCommand() {	
@@ -156,6 +157,48 @@ public class PodSubsystem extends Subsystem {
 	public void setDrivePID(double p, double i, double d)
 	{
 		drive.setPID(p, i, d);
+	}
+	// enables the flag which allows the pod to minimize turning. 
+	public void enableSmartSteer()
+	{
+		drive.configPeakOutputVoltage(12.0, -12.0);
+		enableSmartSteer = true; 
+	}
+	// disables the flag which allows the pod to minimize turning. 
+	public void disableSmartSteer()
+	{
+		drive.configPeakOutputVoltage(12.0, 0);
+		enableSmartSteer = true;
+	}
+	/* This function will set the pods angle and speed. 
+	 * If the pod has smart steering enabled it 
+	 * will try and minimize the distance traveled during a rotation */ 
+	public void setPodSpeedAndAngle(double targetAngle, double targetSpeed)
+	{
+		if (enableSmartSteer == true) 
+		{
+			double currentAngle = steerPID.get();
+			boolean flipSpeed = false; 
+			double difference =  targetAngle - currentAngle; 
+			if ( Math.abs(difference) > 90.0)
+			{
+				targetAngle -= 180.0;
+				flipSpeed = true; 
+			}
+			if (targetAngle < -180.0)
+			{
+				targetAngle += 360; 
+			} else if ( targetAngle > 180.0 ) 
+			{
+				targetAngle -= 360; 
+			}
+			if ( flipSpeed == true )
+			{
+				targetSpeed = -targetSpeed; 
+			}
+		}
+		setSteeringAngle(targetAngle); 
+		setWheelSpeed(targetSpeed); 
 	}
 	@Override
 	protected void initDefaultCommand() {
