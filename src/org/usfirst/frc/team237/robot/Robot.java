@@ -1,11 +1,9 @@
 package org.usfirst.frc.team237.robot;
 
-import org.usfirst.frc.team237.robot.commands.DriveForTimeAtSpeed;
-import org.usfirst.frc.team237.robot.commands.autonomous.BlueLeftGear;
-import org.usfirst.frc.team237.robot.commands.autonomous.BlueRightGear;
+import org.usfirst.frc.team237.robot.commands.DriveForCountsAtSpeed;
+import org.usfirst.frc.team237.robot.commands.autonomous.LeftGear;
+import org.usfirst.frc.team237.robot.commands.autonomous.RightGear;
 import org.usfirst.frc.team237.robot.commands.autonomous.CenterGearGroup;
-import org.usfirst.frc.team237.robot.commands.autonomous.RedLeftGear;
-import org.usfirst.frc.team237.robot.commands.autonomous.RedRightGear;
 import org.usfirst.frc.team237.robot.subsystems.DriveSubsystem;
 import org.usfirst.frc.team237.robot.subsystems.IntakeSubsystem;
 import org.usfirst.frc.team237.robot.subsystems.RopeSubsystem;
@@ -43,13 +41,11 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		oi = new OI();
 		chooser = new SendableChooser<Command>();
-		chooser.addDefault("Default Auto", new BlueLeftGear());
-		chooser.addObject("Blue Left", new BlueLeftGear());
+		chooser.addDefault("Default Auto", new LeftGear());
+		chooser.addObject("Blue Left", new LeftGear());
 		chooser.addObject("Blue Center", new CenterGearGroup());
-		chooser.addObject("Blue Right", new BlueRightGear());
-		chooser.addObject("Red Left", new RedLeftGear());
+		chooser.addObject("Blue Right", new RightGear());
 		chooser.addObject("Red Center", new CenterGearGroup());
-		chooser.addObject("Red Right", new RedRightGear());
 		SmartDashboard.putData("Auto mode", chooser);
 		UsbCamera cam = CameraServer.getInstance().startAutomaticCapture();
 		cam.setResolution(1280, 720);

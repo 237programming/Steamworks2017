@@ -45,19 +45,19 @@ public class AlignToGear extends Command {
 			if (targetLocation < min) {
 		//    		Robot.driveTrain.autoDrive(0.1, 45, 0);
 				headingTheta = 0;
-				Robot.driveTrain.autoDrive(.08, headingTheta, 0);
+				Robot.driveTrain.autoDrive(.1, headingTheta, 0);
 			}
 			else if ( targetLocation > max) { 
 		//    		Robot.driveTrain.autoDrive(0.1, -45, 0);
 				headingTheta = 180;
-				Robot.driveTrain.autoDrive(.08, headingTheta, 0);
+				Robot.driveTrain.autoDrive(.1, headingTheta, 0);
 			} 
 			else {
 				onTarget = true;
 			}
     	} else {
     		headingTheta = 180;
-			Robot.driveTrain.autoDrive(.08, headingTheta, 0);
+			Robot.driveTrain.autoDrive(.1, headingTheta, 0);
 			targetVisible = Robot.driveTrain.getDigital();
     	}
     }

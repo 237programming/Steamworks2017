@@ -14,7 +14,7 @@ public class RobotMap {
 		public static final int pod0Offset = 445-512;  //FrontRight 1_____0
 		public static final int pod1Offset = 308-512;  //FrontLeft  |  ^  |
 		public static final int pod2Offset = 989-512;  //RearLeft   |  |  |
-		public static final int pod3Offset = 390-512;  //RearRight  2_____3
+		public static final int pod3Offset = 760-512;  //RearRight  2_____3
 		
 		//CAN Addresses for pod drive motors
 		public static final int pod0 = 1;
@@ -40,7 +40,7 @@ public class RobotMap {
 		
 		public static final double ANG_P = 0.1;//0.145;
 		public static final double ANG_I = 0;
-		public static final double ANG_D = 0.1;//0.72;
+		public static final double ANG_D = 0.085;//0.72;
 		
 		public static final double SHOOTER_P = 0.05;//0.7;
 		public static final double SHOOTER_I = 0;

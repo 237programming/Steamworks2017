@@ -30,6 +30,7 @@ public class RopeSubsystem extends Subsystem {
 	{
 		if(speed == Speed.Off)  hangerTalon.set(0.0);
 		if(speed == Speed.Slow) hangerTalon.set(0.5);
+//		Tried to make it -0.5 and it drove the drive instead of hanger
 		if(speed == Speed.Fast) hangerTalon.set(1.0);
 	}
 	

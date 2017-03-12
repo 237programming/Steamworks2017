@@ -59,6 +59,15 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		digitalIn = new DigitalInput(0);
 		analogIn = new AnalogInput(0);
 	}
+	public int getEncPos(){
+		return pod0.getEncPos();
+	}
+	public void zeroEnc(){
+		pod0.zeroEnc();
+		pod1.zeroEnc();
+		pod2.zeroEnc();
+		pod3.zeroEnc();
+	}
 	public void enableLowPower(){
 		lowPowerMode = true;
 		
@@ -261,7 +270,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 			}
 			else if( x < -joystickDeadband ){
 			//	x = -RobotMap.DriveMap.lowPowerSpeed;
-				x = -x/2;
+				x = x/2;
 			}
 			else{ 
 				x = 0;
@@ -272,7 +281,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 			}
 			else if( y < -joystickDeadband ){
 			//	y = -RobotMap.DriveMap.lowPowerSpeed;
-				y = -y/2;
+				y = y/2;
 			}
 			else{ 
 				y = 0;
@@ -510,6 +519,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		SmartDashboard.putBoolean("DriveTrain/Auto Driving", autoDriving);
 		SmartDashboard.putBoolean("DriveTrain/Auto Rotating", whileRotating);
 		SmartDashboard.putBoolean("DriveTrain/Field Rotating", fieldRotating);
+		SmartDashboard.putBoolean("DriveTrain/LowPower", lowPowerMode);
 	}
 	
     public void initDefaultCommand()

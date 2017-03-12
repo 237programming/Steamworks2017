@@ -33,23 +33,23 @@ public class OI {
 	public static Joystick rotateJoystick = new Joystick(0);
 	public static Joystick controls       = new Joystick(2);
 	
-	public static Button toggleFOD          = new JoystickButton(controls, 9);
-	public static Button toggleGearLight    = new JoystickButton(rotateJoystick, 2);
-	public static Button toggleShooterLight = new JoystickButton(rotateJoystick, 1);
-	public static Button leftPeg            = new JoystickButton(strafeJoystick, 4);
-	public static Button middlePeg          = new JoystickButton(strafeJoystick, 3);
-	public static Button rightPeg           = new JoystickButton(strafeJoystick, 5);
-	public static Button spin180            = new JoystickButton(strafeJoystick, 2);
-	public static Button zeroGyroButton     = new JoystickButton(strafeJoystick, 8);
-	public static Button shootAngle         = new JoystickButton(rotateJoystick, 2);
-	public static Button readyShooter       = new JoystickButton(controls, 1);
-	public static Button outtakeButton      = new JoystickButton(controls, 2);
-	public static Button intakeButton       = new JoystickButton(controls, 3);
-	public static Button pullRopeFastButton = new JoystickButton(controls, 4);
-	public static Button pullRopeSlowButton = new JoystickButton(controls, 5);
-	public static Button autoHangGear       = new JoystickButton(controls, 6);
-	public static Button shootButton        = new JoystickButton(controls, 7);
-	public static Button toggleLowPower		= new JoystickButton(strafeJoystick, 10);
+	public static Button toggleFOD            = new JoystickButton(controls, 9);
+	public static Button toggleGearLight      = new JoystickButton(rotateJoystick, 2);
+	public static Button toggleShooterLight   = new JoystickButton(rotateJoystick, 1);
+	public static Button leftPeg              = new JoystickButton(strafeJoystick, 4);
+	public static Button middlePeg            = new JoystickButton(strafeJoystick, 3);
+	public static Button rightPeg             = new JoystickButton(strafeJoystick, 5);
+	public static Button spin180              = new JoystickButton(strafeJoystick, 2);
+	public static Button zeroGyroButton       = new JoystickButton(strafeJoystick, 8);
+	public static Button shootAngle           = new JoystickButton(rotateJoystick, 2);
+	public static Button readyShooter         = new JoystickButton(controls, 1);
+	public static Button outtakeButton        = new JoystickButton(controls, 2);
+	public static Button intakeButton         = new JoystickButton(controls, 3);
+	public static Button pullRopeFastButton   = new JoystickButton(controls, 4);
+	public static Button pullRopeSlowButton= new JoystickButton(controls, 5);
+	public static Button autoHangGear         = new JoystickButton(controls, 6);
+	public static Button shootButton          = new JoystickButton(controls, 7);
+	public static Button toggleLowPower		  = new JoystickButton(strafeJoystick, 1);
 	
 	public OI()
 	{
@@ -68,7 +68,7 @@ public class OI {
 		toggleShooterLight .whenPressed  (new ToggleShooterLightCommand());
 		zeroGyroButton     .whenPressed  (new ZeroGyro());
 		
-		autoHangGear       .whenPressed  (new AlignToGear(1.9, 2));
+		autoHangGear       .whenPressed  (new AlignToGear(2, 2.5));
 //		autoHangGear       .whenReleased (new DriveForTimeAtSpeed(0, 0, 0, 0));
 		
 		readyShooter       .whenPressed  (new ReadyShooter());

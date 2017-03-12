@@ -11,7 +11,7 @@ public class RotateTo extends Command {
 	double angle;
 	int counter = 0;
 	boolean doneRotating = false;
-	double deadband = 5;
+	double deadband = 7;
 	
     public RotateTo(double angle) {
         // Use requires() here to declare subsystem dependencies

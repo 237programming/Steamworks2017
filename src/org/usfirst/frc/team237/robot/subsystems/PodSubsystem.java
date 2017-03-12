@@ -128,6 +128,7 @@ public class PodSubsystem extends Subsystem {
     	SmartDashboard.putNumber("Pod" + podNumber + "/Drive/I",drive.getI() );
     	SmartDashboard.putNumber("Pod" + podNumber + "/Drive/D",drive.getD() );
     	SmartDashboard.putNumber("Pod" + podNumber + "/Drive/F",drive.getF() );
+    	SmartDashboard.putNumber("Pod" + podNumber + "/Drive/ Encoder", drive.getEncPosition());
 //		Give SmartDash data
 	}
 	
@@ -141,6 +142,13 @@ public class PodSubsystem extends Subsystem {
 	}
 	public void setOffSet(int offset) {
 		this.offset = offset;			
+	}
+	public int getEncPos(){
+		return drive.getEncPosition();
+	}
+	public void zeroEnc(){
+		drive.setEncPosition(0);
+		drive.setEncPosition(0);
 	}
 	public void setPercentVBusSteer(double val){
 		steer.changeControlMode(TalonControlMode.PercentVbus);
