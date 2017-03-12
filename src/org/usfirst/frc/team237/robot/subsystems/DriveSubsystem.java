@@ -33,7 +33,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 	private boolean  inDeadBand    = true;
 	public  boolean  autoDriving   = false;
 	private boolean  fieldRotating = false;
-	private boolean	 lowPowerMode = false; 
+	private boolean	 lowPowerMode  = false; 
 	
 	private DigitalInput digitalIn;
 	private AnalogInput analogIn;
@@ -256,19 +256,23 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		// low power mode <-----------------------------------TO CHANGE LOW POWERMODE MAKE MODIFICATIONS HERE
 		if(lowPowerMode){
 			if( x > joystickDeadband ){
-				x = RobotMap.DriveMap.lowPowerSpeed;
+			//	x = RobotMap.DriveMap.lowPowerSpeed;
+				x = x/2; 
 			}
 			else if( x < -joystickDeadband ){
-				x = -RobotMap.DriveMap.lowPowerSpeed;
+			//	x = -RobotMap.DriveMap.lowPowerSpeed;
+				x = -x/2;
 			}
 			else{ 
 				x = 0;
 			}
 			if( y > joystickDeadband ){
-				y = RobotMap.DriveMap.lowPowerSpeed;
+			//	y = RobotMap.DriveMap.lowPowerSpeed;
+				y = y/2;
 			}
 			else if( y < -joystickDeadband ){
-				y = -RobotMap.DriveMap.lowPowerSpeed;
+			//	y = -RobotMap.DriveMap.lowPowerSpeed;
+				y = -y/2;
 			}
 			else{ 
 				y = 0;

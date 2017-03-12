@@ -92,7 +92,7 @@ public class OI {
 		toggleFOD          .whenPressed  (new EnableFOD());
 		toggleFOD          .whenReleased (new DisableFOD());
 		
-		toggleLowPower     .whenPressed (new ToggleLowPowerMode());
+		toggleLowPower     .whenPressed  (new ToggleLowPowerMode());
 	}
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
