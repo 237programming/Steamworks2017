@@ -43,7 +43,11 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 		pod1 = new PodSubsystem(RobotMap.DriveMap.pod1, RobotMap.DriveMap.pod1Steering, 1, RobotMap.DriveMap.pod1Offset); //FrontLeft  |  ^  |
 		pod2 = new PodSubsystem(RobotMap.DriveMap.pod2, RobotMap.DriveMap.pod2Steering, 2, RobotMap.DriveMap.pod2Offset); //RearLeft   |  |  |
 		pod3 = new PodSubsystem(RobotMap.DriveMap.pod3, RobotMap.DriveMap.pod3Steering, 3, RobotMap.DriveMap.pod3Offset); //RearRight  3_____0
-	
+		pod0.enableSmartSteer(); 
+		pod1.enableSmartSteer();
+		pod2.enableSmartSteer();
+		pod3.enableSmartSteer();
+		
 		//Instantiate gyro for field oriented drive
 		gyro = new AHRS(SerialPort.Port.kUSB, AHRS.SerialDataType.kProcessedData, (byte) 200);
 		gyro.reset();
